@@ -1,0 +1,2124 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>מרכז יועצי השקעות - סידור עבודה</title>
+<script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+<script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+<script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#f0f2f8;
+  --surface:#ffffff;
+  --surface2:#f5f7fc;
+  --surface3:#eaecf5;
+  --border:#d4d8ee;
+  --border2:#c0c6e0;
+  --accent:#3a6fd8;
+  --accent2:#6050d0;
+  --accent-light:#e8eefb;
+  --text:#1a1e3a;
+  --text2:#4a5280;
+  --text3:#8a93c0;
+  --green:#1a9a5a;
+  --green-bg:#e8f8f0;
+  --red:#c0392b;
+  --red-bg:#fdecea;
+  --yellow:#b87800;
+  --yellow-bg:#fef8e8;
+  --blue:#1a5fa0;
+  --blue-bg:#e8f2fb;
+  --purple:#6050d0;
+  --purple-bg:#f0eefb;
+  --radius:10px;
+  --shadow:0 2px 12px rgba(58,111,216,0.10);
+  --shadow-md:0 4px 20px rgba(58,111,216,0.15);
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Heebo',sans-serif;background:var(--bg);color:var(--text);direction:rtl;min-height:100vh;}
+
+/* ── HEADER ── */
+.header{
+  background:linear-gradient(135deg,#1e2d6e,#2a3f9e);
+  padding:0 20px;display:flex;align-items:center;justify-content:space-between;height:58px;
+  position:sticky;top:0;z-index:200;box-shadow:0 2px 16px rgba(30,45,110,0.35);}
+.header-left{display:flex;align-items:center;gap:12px;}
+.logo-icon{width:36px;height:36px;background:rgba(255,255,255,0.18);
+  border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:18px;border:1px solid rgba(255,255,255,0.25);}
+.logo-text h1{font-size:15px;font-weight:800;color:#fff;}
+.logo-text span{font-size:10px;color:rgba(255,255,255,0.6);}
+.header-right{display:flex;gap:7px;align-items:center;}
+
+/* ── BUTTONS ── */
+.btn{padding:6px 13px;border-radius:7px;border:none;cursor:pointer;
+  font-family:'Heebo';font-size:12px;font-weight:700;transition:all .15s;
+  display:inline-flex;align-items:center;gap:5px;white-space:nowrap;}
+.btn-white{background:rgba(255,255,255,0.15);color:#fff;border:1px solid rgba(255,255,255,0.3);}
+.btn-white:hover{background:rgba(255,255,255,0.25);}
+.btn-ghost{background:transparent;color:var(--text2);border:1px solid var(--border2);}
+.btn-ghost:hover{background:var(--surface2);color:var(--text);}
+.btn-primary{background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;box-shadow:0 2px 8px rgba(58,111,216,0.3);}
+.btn-primary:hover{opacity:.9;transform:translateY(-1px);}
+.btn-success{background:var(--green);color:#fff;}
+.btn-success:hover{filter:brightness(1.1);}
+.btn-warning{background:#e67e22;color:#fff;}
+.btn-warning:hover{filter:brightness(1.1);}
+.btn-danger{background:var(--red);color:#fff;}
+.btn-orange{background:#c0520a;color:#fff;}
+.btn-teal{background:#0d7a7a;color:#fff;}
+.btn-sm{padding:4px 9px;font-size:11px;}
+.btn:disabled{opacity:.4;cursor:not-allowed;transform:none !important;}
+
+/* ── WEEK BAR ── */
+.week-bar{background:var(--surface);border-bottom:2px solid var(--border);
+  padding:9px 20px;display:flex;align-items:center;gap:10px;flex-wrap:wrap;
+  position:sticky;top:58px;z-index:190;box-shadow:var(--shadow);}
+.week-select{background:var(--surface2);color:var(--text);border:1px solid var(--border2);
+  border-radius:7px;padding:5px 9px;font-family:'Heebo';font-size:12px;min-width:200px;cursor:pointer;}
+.week-badge{background:linear-gradient(135deg,var(--accent),var(--accent2));
+  color:#fff;padding:3px 10px;border-radius:20px;font-size:11px;font-weight:700;}
+.war-badge{background:#c0392b;color:#fff;padding:3px 10px;border-radius:20px;font-size:11px;font-weight:800;
+  animation:pulse 1.5s infinite;}
+@keyframes pulse{0%,100%{opacity:1;}50%{opacity:.7;}}
+
+/* ── TABS ── */
+.tabs{display:flex;gap:2px;padding:10px 20px 0;background:var(--surface);
+  border-bottom:2px solid var(--border);
+  position:sticky;top:103px;z-index:180;box-shadow:var(--shadow);}
+.tab{padding:7px 14px;border-radius:8px 8px 0 0;font-size:12px;font-weight:700;cursor:pointer;
+  border:2px solid transparent;border-bottom:none;transition:all .15s;color:var(--text3);}
+.tab-on{background:var(--bg);border-color:var(--border2);border-bottom-color:var(--bg);color:var(--accent);margin-bottom:-2px;}
+.tab-off:hover{color:var(--text2);background:var(--surface2);}
+
+/* ── LEGEND ── */
+.legend{display:flex;gap:14px;align-items:center;flex-wrap:wrap;
+  padding:7px 20px;background:var(--surface2);border-bottom:1px solid var(--border);
+  position:sticky;top:143px;z-index:170;}
+.legend-item{display:flex;align-items:center;gap:5px;font-size:11px;color:var(--text2);font-weight:500;}
+.ldot{width:12px;height:12px;border-radius:3px;border:1px solid rgba(0,0,0,0.1);}
+
+/* ── WARNINGS ── */
+.warn-bar{padding:8px 20px;display:flex;gap:8px;flex-wrap:wrap;
+  background:#fffbf0;border-bottom:1px solid #e8d8a0;}
+.warn{display:flex;align-items:center;gap:5px;font-size:11px;padding:4px 9px;
+  border-radius:5px;font-weight:600;}
+.warn-bad{background:var(--red-bg);color:var(--red);border:1px solid #f5c0bb;}
+.warn-ok{background:var(--green-bg);color:var(--green);border:1px solid #b0e8c8;}
+
+/* ── TABLE ── */
+.tbl-outer{overflow:auto;margin:14px 20px;border-radius:var(--radius);
+  border:1.5px solid var(--border2);box-shadow:var(--shadow);max-height:calc(100vh - 170px);}
+.sched-table{width:100%;border-collapse:collapse;min-width:1100px;background:var(--surface);}
+.sched-table thead th{
+  position:sticky;z-index:60;background:#1e2d6e;color:#fff;
+  border:1px solid rgba(255,255,255,0.15);
+  padding:8px 5px;font-size:11px;font-weight:700;text-align:center;white-space:nowrap;}
+.sched-table thead tr:first-child th{top:0;}
+.sched-table thead tr:nth-child(2) th{top:37px;background:#2a3f9e;font-size:10px;font-weight:600;color:rgba(255,255,255,0.85);}
+.sched-table th.day-hdr{font-size:12px;padding:10px 6px;letter-spacing:.3px;}
+
+/* Day column color coding */
+.day-0{background:#1e3a6e !important;} /* ראשון - deep blue */
+.day-1{background:#1e4a6e !important;} /* שני */
+.day-2{background:#1a3d5e !important;} /* שלישי */
+.day-3{background:#1a3060 !important;} /* רביעי */
+.day-4{background:#1e2d6e !important;} /* חמישי */
+.day-5{background:#2d1e6e !important;} /* שישי - purple tint */
+
+.sched-table td{border:1px solid var(--border);padding:2px;vertical-align:middle;text-align:center;background:var(--surface);}
+.sched-table tr:hover td{background:#f8f9fe;}
+.sched-table tr:hover td.name-cell{background:var(--surface2);}
+
+/* Day column backgrounds (light) */
+.col-day-0{background:#f8fbff !important;}
+.col-day-1{background:#f5faff !important;}
+.col-day-2{background:#f8f8ff !important;}
+.col-day-3{background:#f5f5ff !important;}
+.col-day-4{background:#f8f5ff !important;}
+.col-day-5{background:#faf5ff !important;}
+
+/* NAME CELL */
+.name-cell{background:var(--surface2) !important;padding:6px 10px !important;
+  text-align:right !important;white-space:nowrap;
+  position:sticky;right:0;z-index:50;min-width:115px !important;
+  border-right:3px solid var(--border2) !important;}
+.sched-table thead tr:first-child th:first-child{
+  right:0;z-index:70;background:#1a2560 !important;border-right:3px solid rgba(255,255,255,0.2) !important;}
+.emp-name{font-size:12px;font-weight:700;color:var(--text);}
+.emp-ext{font-size:10px;color:var(--text3);}
+.emp-backup{font-size:10px;color:var(--accent);}
+.emp-role-badge{display:inline-block;font-size:9px;padding:1px 5px;border-radius:3px;font-weight:700;margin-top:2px;}
+.role-mgr{background:var(--purple-bg);color:var(--purple);}
+.role-tl{background:#fff0e0;color:#9a4400;border:1px solid #e8a060;}
+.role-adv{background:var(--blue-bg);color:var(--blue);}
+.role-int{background:var(--green-bg);color:var(--green);}
+
+/* ── SHIFT CELLS ── */
+.sc{display:flex;align-items:center;justify-content:center;border-radius:6px;
+  height:34px;cursor:pointer;transition:all .12s;font-size:10px;font-weight:700;
+  border:1.5px solid transparent;margin:2px;user-select:none;}
+.sc:hover{transform:scale(1.05);box-shadow:0 2px 8px rgba(0,0,0,0.15);}
+.sc-morning{background:#eef2ff;border-color:#b0bcf0;color:#3a5ab8;}
+.sc-wfh{background:#dff0ff;border-color:#80c0f0;color:#1a6ab8;}
+.sc-evening{background:#f0eeff;border-color:#b8a8f0;color:#5a3ab8;}
+.sc-vacation{background:#fffbe8;border-color:#e8c840;color:#8a6000;}
+.sc-sick{background:#ffeeee;border-color:#f0a0a0;color:#b02020;}
+.sc-reserve{background:#fff8e8;border-color:#e8c080;color:#805000;}
+.sc-off{background:#f5f6fa;border-color:#d8daea;color:#a0a8c8;}
+.sc-holiday{background:#fce8f4;border-color:#d890b8;color:#800050;}
+.sc-half{background:#fef0d8;border-color:#e8a040;color:#804000;}
+.sc-wfheve{background:#e8f4ff;border-color:#60a8e8;color:#1050a0;}
+
+/* ── DROPDOWN ── */
+.dd-wrap{position:relative;}
+.dd-menu{position:absolute;top:calc(100% + 3px);right:50%;transform:translateX(50%);
+  background:#fff;border:1.5px solid var(--border2);border-radius:10px;
+  padding:5px;z-index:400;min-width:145px;box-shadow:var(--shadow-md);
+  display:flex;flex-direction:column;gap:1px;}
+.dd-opt{padding:6px 10px;border-radius:6px;cursor:pointer;font-size:11px;font-weight:600;
+  transition:background .1s;display:flex;align-items:center;gap:7px;color:var(--text);}
+.dd-opt:hover{background:var(--surface2);}
+.dd-dot{width:9px;height:9px;border-radius:2px;flex-shrink:0;}
+.dd-check{margin-right:auto;color:var(--accent);font-size:11px;}
+
+/* ── STATS ── */
+.stat-row{display:flex;gap:3px;flex-wrap:wrap;padding:2px;}
+.sb{font-size:9px;padding:2px 5px;border-radius:3px;font-weight:700;border:1px solid transparent;}
+.sb-ok{background:var(--green-bg);color:var(--green);border-color:#b0e8c8;}
+.sb-bad{background:var(--red-bg);color:var(--red);border-color:#f5c0bb;}
+.sb-info{background:var(--blue-bg);color:var(--blue);border-color:#b0d4f0;}
+.sb-neu{background:var(--purple-bg);color:var(--purple);border-color:#c8c0f0;}
+
+/* ── GROUP DIVIDER ── */
+.role-divider td{
+  background:linear-gradient(90deg,#2a3f9e,#3a52b0) !important;
+  color:#fff;padding:6px 14px;font-size:11px;font-weight:800;
+  letter-spacing:1px;border:none !important;}
+
+/* ── DUTIES ── */
+.duties-wrap{margin:0 20px 20px;background:var(--surface);border:1.5px solid var(--border2);
+  border-radius:var(--radius);overflow:hidden;box-shadow:var(--shadow);}
+.duties-hdr{padding:11px 16px;background:linear-gradient(135deg,#1e2d6e,#2a3f9e);
+  border-bottom:2px solid var(--border2);
+  display:flex;align-items:center;justify-content:space-between;}
+.duties-hdr h3{font-size:13px;font-weight:800;color:#fff;}
+.duties-grid{display:grid;grid-template-columns:repeat(6,1fr);}
+.duty-col{border-left:1.5px solid var(--border);}
+.duty-col:last-child{border-left:none;}
+
+/* Day column colors for duties */
+.duty-col-0{background:#f8fbff;}
+.duty-col-1{background:#f5faff;}
+.duty-col-2{background:#f8f8ff;}
+.duty-col-3{background:#f5f5ff;}
+.duty-col-4{background:#f8f5ff;}
+.duty-col-5{background:#faf5ff;}
+
+.duty-day-hdr{padding:7px 6px;text-align:center;
+  font-size:11px;font-weight:800;border-bottom:1.5px solid var(--border);
+  display:flex;align-items:center;justify-content:center;gap:5px;}
+.duty-day-hdr-0{background:#1e3a6e;color:#fff;}
+.duty-day-hdr-1{background:#1e4a6e;color:#fff;}
+.duty-day-hdr-2{background:#1a3d5e;color:#fff;}
+.duty-day-hdr-3{background:#1a3060;color:#fff;}
+.duty-day-hdr-4{background:#1e2d6e;color:#fff;}
+.duty-day-hdr-5{background:#2d1e6e;color:#fff;}
+
+.duty-item{padding:6px;border-bottom:1px solid var(--border);}
+.duty-item:last-child{border-bottom:none;}
+.duty-lbl{font-size:9px;color:var(--text3);margin-bottom:2px;font-weight:600;text-transform:uppercase;letter-spacing:.5px;}
+.duty-sel{width:100%;background:#fff;color:var(--text);border:1px solid var(--border2);
+  border-radius:5px;padding:4px 5px;font-family:'Heebo';font-size:11px;cursor:pointer;font-weight:600;}
+.duty-sel:focus{outline:none;border-color:var(--accent);}
+
+/* ── MODAL ── */
+.modal-overlay{position:fixed;inset:0;background:rgba(20,30,80,.55);
+  display:flex;align-items:center;justify-content:center;z-index:600;backdrop-filter:blur(6px);}
+.modal{background:#fff;border:1.5px solid var(--border2);border-radius:14px;
+  padding:24px;min-width:340px;max-width:94vw;max-height:92vh;overflow-y:auto;
+  box-shadow:var(--shadow-md);}
+.modal h3{font-size:15px;font-weight:800;margin-bottom:16px;color:var(--text);}
+.modal-actions{display:flex;gap:8px;margin-top:18px;justify-content:flex-end;}
+.fg{margin-bottom:12px;}
+.fg label{display:block;font-size:11px;color:var(--text2);margin-bottom:4px;font-weight:700;}
+.fc{width:100%;background:var(--surface2);color:var(--text);border:1.5px solid var(--border2);
+  border-radius:7px;padding:8px 10px;font-family:'Heebo';font-size:12px;}
+.fc:focus{outline:none;border-color:var(--accent);background:#fff;}
+
+/* ── ADMIN / CARDS ── */
+.wrap{padding:16px 20px;}
+.acard{background:var(--surface);border:1.5px solid var(--border2);border-radius:var(--radius);
+  overflow:hidden;margin-bottom:14px;box-shadow:var(--shadow);}
+.acard-hdr{padding:11px 16px;background:linear-gradient(135deg,#f5f7fc,#eaecf5);
+  border-bottom:1.5px solid var(--border2);
+  font-size:13px;font-weight:800;display:flex;align-items:center;justify-content:space-between;color:var(--text);}
+.acard-body{padding:14px;}
+.eli{display:flex;align-items:center;justify-content:space-between;padding:7px 11px;
+  border-radius:7px;margin-bottom:4px;background:var(--surface2);font-size:12px;
+  border:1px solid var(--border);}
+.eli:hover{background:var(--accent-light);border-color:var(--accent);}
+
+/* ── SUMMARY CARDS ── */
+.sum-cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(115px,1fr));gap:10px;margin-bottom:16px;}
+.sum-card{background:var(--surface);border:1.5px solid var(--border2);border-radius:var(--radius);
+  padding:12px 14px;box-shadow:var(--shadow);}
+.sum-card .val{font-size:26px;font-weight:900;}
+.sum-card .lbl{font-size:10px;color:var(--text2);margin-top:2px;font-weight:600;}
+.sum-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:10px;}
+.sum-emp{background:var(--surface);border:1.5px solid var(--border2);border-radius:var(--radius);
+  padding:10px 12px;box-shadow:var(--shadow);}
+.sum-emp-name{font-size:12px;font-weight:700;margin-bottom:6px;display:flex;align-items:center;justify-content:space-between;}
+.sum-stats{display:flex;gap:3px;flex-wrap:wrap;}
+
+/* ── MANAGER SUMMARY ── */
+.mgr-alerts{display:flex;flex-direction:column;gap:8px;}
+.alert-item{display:flex;align-items:flex-start;gap:10px;padding:12px 14px;border-radius:9px;
+  border:1.5px solid;font-size:12px;}
+.alert-high{background:#fff0f0;border-color:#f0b0b0;color:#800000;}
+.alert-med{background:#fffbe8;border-color:#e8c840;color:#6a4800;}
+.alert-low{background:var(--green-bg);border-color:#b0e8c8;color:#006030;}
+.alert-info{background:var(--blue-bg);border-color:#b0d0f0;color:#003880;}
+.alert-icon{font-size:18px;flex-shrink:0;}
+.alert-body strong{display:block;font-weight:800;margin-bottom:2px;}
+
+/* ── CONSTRAINTS ── */
+.con-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px;}
+.con-row{display:flex;align-items:center;gap:8px;padding:6px 0;border-bottom:1px solid var(--border);font-size:12px;}
+.con-row:last-child{border-bottom:none;}
+.con-label{flex:1;color:var(--text2);font-weight:500;}
+.con-input{background:var(--surface2);color:var(--text);border:1.5px solid var(--border2);
+  border-radius:5px;padding:4px 8px;font-family:'Heebo';font-size:12px;width:65px;text-align:center;font-weight:700;}
+.con-input:focus{outline:none;border-color:var(--accent);}
+
+/* Employee constraint table */
+.emp-con-table{width:100%;border-collapse:collapse;font-size:11px;}
+.emp-con-table th{padding:6px 8px;text-align:right;border:1px solid var(--border);
+  color:#fff;font-weight:700;font-size:10px;}
+.th-off{background:#c0392b;}
+.th-eve{background:#5a3ab8;}
+.th-wfh{background:#1a6ab8;}
+.emp-con-table td{border:1px solid var(--border);padding:4px 6px;text-align:center;vertical-align:middle;background:#fff;}
+.emp-con-table td:first-child{text-align:right;font-weight:700;color:var(--text);background:var(--surface2);}
+.emp-con-table tr:nth-child(even) td{background:#fafbff;}
+.emp-con-table tr:nth-child(even) td:first-child{background:#f2f4fb;}
+
+/* Day group headers in constraint table */
+.th-day-group{text-align:center;padding:5px;font-size:10px;}
+.th-day-0{background:#1e3a6e;}
+.th-day-1{background:#1e4a6e;}
+.th-day-2{background:#1a3d5e;}
+.th-day-3{background:#1a3060;}
+.th-day-4{background:#1e2d6e;}
+.th-day-5{background:#2d1e6e;}
+
+.day-cb{width:15px;height:15px;cursor:pointer;accent-color:var(--accent);}
+.gen-result{margin-top:10px;padding:10px 14px;border-radius:8px;font-size:12px;font-weight:700;}
+.gen-ok{background:var(--green-bg);border:1.5px solid #b0e8c8;color:var(--green);}
+.gen-warn{background:var(--red-bg);border:1.5px solid #f5c0bb;color:var(--red);}
+.tip-box{margin-top:12px;padding:10px 12px;background:var(--blue-bg);
+  border:1.5px solid #b0d4f0;border-radius:8px;font-size:11px;color:var(--blue);line-height:1.7;}
+
+/* ── QUICK EMP PANEL ── */
+.quick-emp-bar{background:var(--accent-light);border-bottom:2px solid var(--border2);
+  padding:8px 20px;display:flex;align-items:center;gap:10px;flex-wrap:wrap;}
+.quick-emp-bar input{background:#fff;color:var(--text);border:1.5px solid var(--border2);
+  border-radius:7px;padding:5px 10px;font-family:'Heebo';font-size:12px;min-width:140px;}
+.quick-emp-bar input:focus{outline:none;border-color:var(--accent);}
+
+/* ── FOOTER ── */
+.footer{text-align:center;padding:14px;font-size:10px;color:var(--text3);
+  border-top:1.5px solid var(--border);margin-top:20px;background:var(--surface2);}
+
+/* ── EMPTY ── */
+.empty{text-align:center;padding:48px;color:var(--text3);}
+.eicon{font-size:44px;margin-bottom:10px;}
+
+/* ── DIVIDER ── */
+.divider{height:1.5px;background:var(--border);margin:14px 0;}
+
+/* ── SCROLLBAR ── */
+::-webkit-scrollbar{width:6px;height:6px;}
+::-webkit-scrollbar-track{background:var(--surface2);}
+::-webkit-scrollbar-thumb{background:var(--border2);border-radius:3px;}
+
+/* ── PRINT ── */
+@media print{
+  .header-right,.week-bar .btn,.tabs,.warn-bar,.footer,.quick-emp-bar{display:none !important;}
+  .tbl-outer{margin:0;border:none;}
+  body{background:#fff;}
+  .sched-table thead th{background:#2a3f9e !important;-webkit-print-color-adjust:exact;}
+  .sc{border:1px solid #ccc !important;font-size:9px !important;height:28px !important;}
+}
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script type="text/babel">
+const {useState,useEffect,useRef,useMemo}=React;
+
+/* ═══════════════════════════════════════
+   CONSTANTS
+═══════════════════════════════════════ */
+const DAYS=['ראשון','שני','שלישי','רביעי','חמישי','שישי'];
+const DAY_EMOJIS=['☀️','🌤️','⛅','🌥️','🌦️','🌙'];
+// Evening targets per day: Sun=6, Mon=8, Tue=6, Wed=8, Thu=5, Fri=0
+const EVENING_TARGETS=[6,8,6,8,5,0];
+// Friday: 4 advisors/tl + 1 manager only
+const FRIDAY_ADVISORS=4;
+const FRIDAY_SENIORS=1;
+
+const SHIFT_TYPES=['morning','wfh','evening','wfheve','vacation','sick','reserve','holiday','half','off'];
+const SHIFT_LABELS={
+  morning:'בוקר',wfh:'בוקר מהבית',evening:'ערב',
+  wfheve:'ערב מהבית',vacation:'חופש',sick:'מחלה',reserve:'מילואים',off:'—'
+};
+const SHIFT_COLORS={
+  morning:'#b0bcf0',wfh:'#80c0f0',evening:'#b8a8f0',
+  wfheve:'#60a8e8',vacation:'#e8c840',sick:'#f0a0a0',
+  reserve:'#e8c080',off:'#d8daea'
+};
+const SHIFT_CSS={
+  morning:'sc-morning',wfh:'sc-wfh',evening:'sc-evening',
+  wfheve:'sc-wfheve',vacation:'sc-vacation',sick:'sc-sick',
+  reserve:'sc-reserve',off:'sc-off'
+};
+const DUTY_TYPES=['פתיחת יום','פניות בוקר','פניות ערב','יועצי בוקר','יועצי ערב'];
+const ROLE_LABELS={mgr:'מנהל',tl:'ראש צוות',adv:'יועץ',int:'מתמחה'};
+const ROLE_CSS={mgr:'role-mgr',tl:'role-tl',adv:'role-adv',int:'role-int'};
+const isSenior=role=>role==='mgr'||role==='tl';
+
+/* ═══════════════════════════════════════
+   EMPLOYEE DATA
+═══════════════════════════════════════ */
+const RAW_EMPLOYEES=[
+  {id:1, name:'אורית',      ext:'700',role:'mgr',backup:'לנה',
+   sched:{0:{m:'off',e:'morning'},1:{m:'morning',e:'off'},2:{m:'morning',e:'off'},3:{m:'morning',e:'off'},4:{m:'morning',e:'off'},5:{m:'off',e:'off'}}},
+  {id:2, name:'לנה',        ext:'710',role:'mgr',backup:'אביעד',
+   sched:{0:{m:'morning',e:'off'},1:{m:'morning',e:'off'},2:{m:'morning',e:'off'},3:{m:'morning',e:'off'},4:{m:'morning',e:'off'},5:{m:'morning',e:'off'}}},
+  {id:3, name:'אביעד',      ext:'720',role:'mgr',backup:'משה',
+   sched:{0:{m:'morning',e:'off'},1:{m:'off',e:'evening'},2:{m:'morning',e:'off'},3:{m:'off',e:'evening'},4:{m:'morning',e:'off'},5:{m:'off',e:'off'}}},
+  {id:4, name:'משה',        ext:'759',role:'tl',backup:'מור חיון',
+   sched:{0:{m:'off',e:'evening'},1:{m:'morning',e:'off'},2:{m:'off',e:'evening'},3:{m:'vacation',e:'off'},4:{m:'morning',e:'off'},5:{m:'morning',e:'off'}}},
+  {id:5, name:'מור חיון',   ext:'724',role:'tl',backup:'איליה',
+   sched:{0:{m:'off',e:'evening'},1:{m:'morning',e:'off'},2:{m:'morning',e:'off'},3:{m:'off',e:'evening'},4:{m:'morning',e:'off'},5:{m:'morning',e:'off'}}},
+  {id:6, name:'איליה',      ext:'721',role:'adv',backup:'אודליה',
+   sched:{0:{m:'morning',e:'off'},1:{m:'off',e:'evening'},2:{m:'morning',e:'off'},3:{m:'off',e:'evening'},4:{m:'morning',e:'off'},5:{m:'morning',e:'off'}}},
+  {id:7, name:'אודליה',     ext:'725',role:'adv',backup:'אורלי',
+   sched:{0:{m:'morning',e:'off'},1:{m:'off',e:'evening'},2:{m:'morning',e:'off'},3:{m:'morning',e:'off'},4:{m:'wfh',e:'off'},5:{m:'off',e:'evening'}}},
+  {id:8, name:'אורלי',      ext:'754',role:'adv',backup:'אורן עמי-גא',
+   sched:{0:{m:'morning',e:'off'},1:{m:'off',e:'evening'},2:{m:'wfh',e:'off'},3:{m:'off',e:'evening'},4:{m:'morning',e:'off'},5:{m:'morning',e:'off'}}},
+  {id:9, name:'אורן עמי-גא',ext:'764',role:'adv',backup:'אלעד זילכה',
+   sched:{0:{m:'morning',e:'off'},1:{m:'off',e:'evening'},2:{m:'morning',e:'off'},3:{m:'off',e:'evening'},4:{m:'morning',e:'off'},5:{m:'off',e:'off'}}},
+  {id:10,name:'אלעד זילכה', ext:'745',role:'adv',backup:'אנה',
+   sched:{0:{m:'morning',e:'off'},1:{m:'off',e:'evening'},2:{m:'morning',e:'off'},3:{m:'morning',e:'off'},4:{m:'morning',e:'off'},5:{m:'off',e:'evening'}}},
+  {id:11,name:'אנה',        ext:'748',role:'adv',backup:'אריק',
+   sched:{0:{m:'off',e:'evening'},1:{m:'morning',e:'off'},2:{m:'morning',e:'off'},3:{m:'morning',e:'off'},4:{m:'morning',e:'off'},5:{m:'morning',e:'off'}}},
+  {id:12,name:'אריק',       ext:'729',role:'adv',backup:'גיא',
+   sched:{0:{m:'off',e:'evening'},1:{m:'morning',e:'off'},2:{m:'wfh',e:'off'},3:{m:'morning',e:'off'},4:{m:'off',e:'evening'},5:{m:'morning',e:'off'}}},
+  {id:13,name:'גיא',        ext:'752',role:'adv',backup:'גל',
+   sched:{0:{m:'wfh',e:'off'},1:{m:'off',e:'evening'},2:{m:'morning',e:'off'},3:{m:'morning',e:'off'},4:{m:'morning',e:'off'},5:{m:'off',e:'evening'}}},
+  {id:14,name:'גל',         ext:'757',role:'adv',backup:'גלעד',
+   sched:{0:{m:'morning',e:'off'},1:{m:'morning',e:'off'},2:{m:'off',e:'evening'},3:{m:'morning',e:'off'},4:{m:'off',e:'evening'},5:{m:'morning',e:'off'}}},
+  {id:15,name:'גלעד',       ext:'758',role:'adv',backup:'זיו',
+   sched:{0:{m:'reserve',e:'off'},1:{m:'reserve',e:'off'},2:{m:'reserve',e:'off'},3:{m:'reserve',e:'off'},4:{m:'reserve',e:'off'},5:{m:'reserve',e:'off'}}},
+  {id:16,name:'זיו',        ext:'741',role:'adv',backup:'יובל שטר',
+   sched:{0:{m:'morning',e:'off'},1:{m:'off',e:'evening'},2:{m:'morning',e:'off'},3:{m:'off',e:'evening'},4:{m:'morning',e:'off'},5:{m:'morning',e:'off'}}},
+  {id:17,name:'יובל שטר',   ext:'753',role:'adv',backup:'פייביש',
+   sched:{0:{m:'vacation',e:'off'},1:{m:'vacation',e:'off'},2:{m:'vacation',e:'off'},3:{m:'vacation',e:'off'},4:{m:'vacation',e:'off'},5:{m:'off',e:'off'}}},
+  {id:18,name:'פייביש',     ext:'719',role:'adv',backup:'ליאת',
+   sched:{0:{m:'morning',e:'off'},1:{m:'off',e:'evening'},2:{m:'morning',e:'off'},3:{m:'morning',e:'off'},4:{m:'morning',e:'off'},5:{m:'morning',e:'off'}}},
+  {id:19,name:'ליאת',       ext:'756',role:'adv',backup:'עומר',
+   sched:{0:{m:'sick',e:'off'},1:{m:'sick',e:'off'},2:{m:'sick',e:'off'},3:{m:'sick',e:'off'},4:{m:'sick',e:'off'},5:{m:'off',e:'off'}}},
+  {id:20,name:'עומר',       ext:'731',role:'adv',backup:'עופר',
+   sched:{0:{m:'morning',e:'off'},1:{m:'off',e:'evening'},2:{m:'wfh',e:'off'},3:{m:'wfheve',e:'off'},4:{m:'morning',e:'off'},5:{m:'morning',e:'off'}}},
+  {id:21,name:'עופר',       ext:'728',role:'adv',backup:'עליזה',
+   sched:{0:{m:'vacation',e:'off'},1:{m:'morning',e:'off'},2:{m:'morning',e:'off'},3:{m:'off',e:'evening'},4:{m:'off',e:'evening'},5:{m:'morning',e:'off'}}},
+  {id:22,name:'עליזה',      ext:'751',role:'adv',backup:'קרן',
+   sched:{0:{m:'morning',e:'off'},1:{m:'off',e:'evening'},2:{m:'morning',e:'off'},3:{m:'off',e:'evening'},4:{m:'vacation',e:'off'},5:{m:'morning',e:'off'}}},
+  {id:23,name:'קרן',        ext:'712',role:'adv',backup:'ראובן רפאל',
+   sched:{0:{m:'off',e:'evening'},1:{m:'morning',e:'off'},2:{m:'morning',e:'off'},3:{m:'off',e:'evening'},4:{m:'morning',e:'off'},5:{m:'morning',e:'off'}}},
+  {id:24,name:'ראובן רפאל', ext:'746',role:'adv',backup:'רונן לרנר',
+   sched:{0:{m:'morning',e:'off'},1:{m:'off',e:'evening'},2:{m:'morning',e:'off'},3:{m:'morning',e:'off'},4:{m:'morning',e:'off'},5:{m:'morning',e:'off'}}},
+  {id:25,name:'רונן לרנר',  ext:'765',role:'adv',backup:'שירה',
+   sched:{0:{m:'morning',e:'off'},1:{m:'off',e:'evening'},2:{m:'morning',e:'off'},3:{m:'wfh',e:'off'},4:{m:'morning',e:'off'},5:{m:'morning',e:'off'}}},
+  {id:26,name:'שירה',       ext:'727',role:'adv',backup:'שמוליק',
+   sched:{0:{m:'off',e:'evening'},1:{m:'morning',e:'off'},2:{m:'off',e:'evening'},3:{m:'wfheve',e:'off'},4:{m:'morning',e:'off'},5:{m:'morning',e:'off'}}},
+  {id:27,name:'שמוליק',     ext:'716',role:'adv',backup:'אלמוג',
+   sched:{0:{m:'off',e:'evening'},1:{m:'morning',e:'off'},2:{m:'morning',e:'off'},3:{m:'morning',e:'off'},4:{m:'wfh',e:'off'},5:{m:'off',e:'evening'}}},
+  {id:28,name:'אלמוג',      ext:'714',role:'int',backup:'אריה',
+   sched:{0:{m:'morning',e:'off'},1:{m:'morning',e:'off'},2:{m:'morning',e:'off'},3:{m:'morning',e:'off'},4:{m:'morning',e:'off'},5:{m:'off',e:'off'}}},
+  {id:29,name:'אריה',       ext:'747',role:'int',backup:'יניר',
+   sched:{0:{m:'morning',e:'off'},1:{m:'morning',e:'off'},2:{m:'morning',e:'off'},3:{m:'morning',e:'off'},4:{m:'morning',e:'off'},5:{m:'off',e:'off'}}},
+  {id:30,name:'יניר',       ext:'726',role:'int',backup:'אלמוג',
+   sched:{0:{m:'morning',e:'off'},1:{m:'morning',e:'off'},2:{m:'morning',e:'off'},3:{m:'morning',e:'off'},4:{m:'morning',e:'off'},5:{m:'off',e:'off'}}},
+];
+
+const DEFAULT_DUTIES={
+  0:{0:'אלמוג',1:'שטר',2:'',3:'אריה',4:''},
+  1:{0:'אריה',1:'אלעד',2:'איליה',3:'',4:''},
+  2:{0:'אלמוג',1:'פייביש',2:'אורן',3:'יניר',4:''},
+  3:{0:'יניר',1:'שמוליק',2:'',3:'אריה',4:''},
+  4:{0:'אריה',1:'',2:'',3:'',4:''},
+  5:{0:'',1:'אורן',2:'',3:'',4:''},
+};
+
+/* ═══════════════════════════════════════
+   HELPERS
+═══════════════════════════════════════ */
+function buildDefault(emps, weekKey){
+  const s={};
+  const weekIdx=weekKey?getWeekIndex(weekKey):0;
+  const fridayTeam=getFridayTeam(emps,weekIdx);
+  const fridayWorkers=new Set([...fridayTeam.advisors, fridayTeam.senior]);
+
+  emps.forEach(emp=>{
+    s[emp.id]={};
+    for(let d=0;d<6;d++){
+      const r=emp.sched[d]||{m:'off',e:'off'};
+      s[emp.id][d]={morning:r.m||'off',evening:r.e||'off'};
+    }
+    // Friday (day 5): only Friday team works; others get day off
+    if(emp.role!=='mgr'){
+      if(fridayWorkers.has(emp.name)){
+        // Friday worker: morning shift
+        s[emp.id][5]={morning:'morning',evening:'off'};
+        // Sunday (day 0): comp day = vacation
+        s[emp.id][0]={morning:'vacation',evening:'off'};
+      } else {
+        // Not working Friday
+        s[emp.id][5]={morning:'off',evening:'off'};
+      }
+    }
+  });
+  return s;
+}
+
+function getEmpStats(empId,schedule){
+  const s=schedule[empId]||{};
+  let m=0,e=0,wfh=0,v=0,sick=0,res=0;
+  for(let d=0;d<6;d++){
+    const c=s[d]||{};
+    if(c.morning==='morning')m++;
+    if(c.morning==='wfh'){m++;wfh++;}
+    if(c.morning==='wfheve')wfh++;
+    if(c.evening==='evening')e++;
+    if(c.evening==='wfheve'){e++;wfh++;}
+    if(c.morning==='vacation'||c.evening==='vacation')v++;
+    if(c.morning==='sick'||c.evening==='sick')sick++;
+    if(c.morning==='reserve'||c.evening==='reserve')res++;
+    if(c.morning==='holiday'||c.evening==='holiday')v++;
+    if(c.morning==='half'||c.evening==='half')v++;
+  }
+  return{m,e,wfh,v,sick,res,total:m+e};
+}
+
+const LS={
+  get:(k,d)=>{try{const v=localStorage.getItem(k);return v?JSON.parse(v):d;}catch{return d;}},
+  set:(k,v)=>{try{localStorage.setItem(k,JSON.stringify(v));}catch{}}
+};
+
+function thisWeekSunday(){
+  const d=new Date();const sun=new Date(d);sun.setDate(d.getDate()-d.getDay());
+  return`${sun.getFullYear()}-${String(sun.getMonth()+1).padStart(2,'0')}-${String(sun.getDate()).padStart(2,'0')}`;
+}
+function weekLabel(key){
+  const[y,m,d]=key.split('-').map(Number);
+  const sun=new Date(y,m-1,d);const fri=new Date(sun);fri.setDate(sun.getDate()+5);
+  const f=dt=>`${dt.getDate()}/${dt.getMonth()+1}/${dt.getFullYear()}`;
+  return`${f(sun)} – ${f(fri)}`;
+}
+
+
+/* ═══════════════════════════════════════
+   FRIDAY ROTATION LOGIC
+═══════════════════════════════════════ */
+// Build fair Friday rotation: round-robin across all adv+tl employees
+// Returns ordered list of employee names for rotation
+function getFridayRotation(employees){
+  return employees.filter(e=>e.role==='adv'||e.role==='tl').map(e=>e.name);
+}
+
+// Get the 4 advisors+tl + 1 senior/mgr for a given week index
+function getFridayTeam(employees, weekIndex){
+  // Advisors+TL pool (not mgr) — fair round-robin, no repeats
+  const advPool = employees.filter(e=>e.role==='adv'||e.role==='tl');
+  const mgrPool = employees.filter(e=>e.role==='mgr');
+  const n=advPool.length;
+  // Pick 4 consecutive in rotation, no duplicates
+  const team=[];
+  const used=new Set();
+  for(let i=0;team.length<Math.min(FRIDAY_ADVISORS,n);i++){
+    const emp=advPool[(weekIndex*FRIDAY_ADVISORS+i)%n];
+    if(!used.has(emp.name)){used.add(emp.name);team.push(emp.name);}
+    if(i>n)break; // safety
+  }
+  // 1 rotating manager
+  const sr=mgrPool.length>0?mgrPool[weekIndex%mgrPool.length].name:'';
+  return{advisors:team,senior:sr};
+}
+
+// Calculate week index from week key (0 = first week of 2024)
+function getWeekIndex(weekKey){
+  const[y,m,d]=weekKey.split('-').map(Number);
+  const base=new Date(2024,0,7); // first Sunday of 2024
+  const cur=new Date(y,m-1,d);
+  return Math.round((cur-base)/(7*24*3600*1000));
+}
+
+/* ═══════════════════════════════════════
+   AUTO-GENERATE DUTIES  (schedule-aware, fair)
+═══════════════════════════════════════ */
+function autoGenerateDuties(employees,schedule){
+  // Build pools per day per period — only workers actually present that day
+  const isWorking=(emp,dayIdx,period)=>{
+    const c=schedule[emp.id]?.[dayIdx]||{};
+    const absent=['off','vacation','sick','reserve'];
+    if(period==='morning') return['morning','wfh'].includes(c.morning)&&!absent.includes(c.morning)===false
+      ?['morning','wfh'].includes(c.morning):false;
+    if(period==='evening') return c.evening==='evening'||c.morning==='wfheve';
+    // 'any' = morning or evening
+    return!absent.includes(c.morning)||c.evening==='evening';
+  };
+
+  const advs=employees.filter(e=>e.role==='adv');
+  const ints=employees.filter(e=>e.role==='int');
+  const allActive=employees.filter(e=>e.role==='adv'||e.role==='int');
+
+  // Weekly assignment counter — tracks fairness across the whole week
+  const weekCounts={};
+  allActive.forEach(e=>{weekCounts[e.name]=0;});
+
+  const duties={};
+
+  // DUTY_TYPES: ['פתיחת יום','פניות בוקר','פניות ערב','יועצי בוקר','יועצי ערב']
+  // Periods:      morning       morning       evening      morning       evening
+  const dutyPeriods=['morning','morning','evening','morning','evening'];
+  // Preferred pool for each duty type index
+  const preferInterns=[true,false,false,false,false]; // duty 0: prefer intern
+
+  for(let d=0;d<6;d++){
+    duties[d]={};
+    // Track daily assignments so same person doesn't get 2 duties same day
+    const dailyAssigned=new Set();
+
+    DUTY_TYPES.forEach((_, dti)=>{
+      const period=dutyPeriods[dti];
+      const useInterns=preferInterns[dti];
+
+      // Build candidate pool: must be working that day in the right period
+      let pool=(useInterns&&ints.length>0?ints:advs).filter(e=>isWorking(e,d,period));
+      // If nobody found in right period, open to anyone working that day
+      if(!pool.length) pool=allActive.filter(e=>isWorking(e,d,'any'));
+      // If still empty (everyone off today), use all active as fallback
+      if(!pool.length) pool=[...allActive];
+
+      // Remove already assigned today (avoid double-duty same person same day)
+      const notBusy=pool.filter(e=>!dailyAssigned.has(e.id));
+      const candidates=notBusy.length>0?notBusy:pool;
+
+      // Sort by weekly count ascending (fairness), break ties randomly
+      const sorted=[...candidates].sort((a,b)=>{
+        const diff=(weekCounts[a.name]||0)-(weekCounts[b.name]||0);
+        return diff!==0?diff:Math.random()-.5;
+      });
+
+      const chosen=sorted[0];
+      duties[d][dti]=chosen?.name||'';
+      if(chosen){
+        weekCounts[chosen.name]=(weekCounts[chosen.name]||0)+1;
+        dailyAssigned.add(chosen.id);
+      }
+    });
+  }
+  return duties;
+}
+
+/* ═══════════════════════════════════════
+   SCHEDULE GENERATOR
+═══════════════════════════════════════ */
+function generateSchedule(employees,constraints,empConstraints){
+  const{targetMorning,targetEvening}=constraints;
+  const sched={};
+  employees.forEach(emp=>{
+    sched[emp.id]={};
+    const ec=empConstraints[emp.id]||{};
+    const forcedOff=new Set(ec.daysOff||[]);
+    const forcedVac=new Set(ec.vacation||[]);
+    const forcedSick=new Set(ec.sick||[]);
+    const forcedRes=new Set(ec.reserve||[]);
+    const mustEve=new Set(ec.mustEvening||[]);
+    const mustWFH=new Set(ec.mustWFH||[]);
+    for(let d=0;d<6;d++){
+      if(forcedVac.has(d)){sched[emp.id][d]={morning:'vacation',evening:'off'};continue;}
+      if(forcedSick.has(d)){sched[emp.id][d]={morning:'sick',evening:'off'};continue;}
+      if(forcedRes.has(d)){sched[emp.id][d]={morning:'reserve',evening:'off'};continue;}
+      sched[emp.id][d]={morning:'off',evening:'off'};
+    }
+    if(emp.role==='mgr')return;
+    const available=[];
+    for(let d=0;d<6;d++){
+      if(!forcedVac.has(d)&&!forcedSick.has(d)&&!forcedRes.has(d)&&!forcedOff.has(d))available.push(d);
+    }
+    let eveningDays=[...mustEve].filter(d=>available.includes(d));
+    const poolForEve=available.filter(d=>!mustWFH.has(d)&&!eveningDays.includes(d));
+    poolForEve.sort(()=>Math.random()-.5);
+    while(eveningDays.length<Math.min(targetEvening,available.length-1)){
+      if(!poolForEve.length)break;eveningDays.push(poolForEve.shift());
+    }
+    eveningDays=eveningDays.slice(0,targetEvening);
+    const morningDays=available.filter(d=>!eveningDays.includes(d));
+    let wfhDay=-1;
+    const mwArr=[...mustWFH].filter(d=>morningDays.includes(d));
+    if(mwArr.length>0)wfhDay=mwArr[0];
+    else if(morningDays.length>0){
+      const pref=morningDays.filter(d=>d!==5);
+      const pool=pref.length?pref:morningDays;
+      wfhDay=pool[Math.floor(Math.random()*pool.length)];
+    }
+    eveningDays.forEach(d=>{sched[emp.id][d]={morning:'off',evening:'evening'};});
+    morningDays.forEach(d=>{sched[emp.id][d]={morning:d===wfhDay?'wfh':'morning',evening:'off'};});
+  });
+  return sched;
+}
+
+/* ═══════════════════════════════════════
+   EXCEL EXPORT (Beautiful)
+═══════════════════════════════════════ */
+function exportToExcel(employees,schedule,weekKey){
+  const wb=XLSX.utils.book_new();
+
+  /* ── Sheet 1: Schedule ── */
+  const wsData=[];
+  // Row 0: Title
+  wsData.push([`סידור עבודה שבועי — ${weekLabel(weekKey)}`,...Array(13).fill(''),'','']);
+  // Row 1: blank
+  wsData.push(Array(16).fill(''));
+  // Row 2: headers
+  wsData.push(['שם עובד','תפקיד','שלוחה','מגבה',
+    'ראשון בוקר','ראשון ערב','שני בוקר','שני ערב','שלישי בוקר','שלישי ערב',
+    'רביעי בוקר','רביעי ערב','חמישי בוקר','חמישי ערב','שישי בוקר','שישי ערב','סה"כ','הערות']);
+
+  const groups=[
+    {label:'מנהלים',list:employees.filter(e=>e.role==='mgr')},
+    {label:'יועצים',list:employees.filter(e=>e.role==='adv')},
+    {label:'מתמחים',list:employees.filter(e=>e.role==='int')},
+  ];
+  groups.forEach(({label,list})=>{
+    if(!list.length)return;
+    wsData.push([label,...Array(17).fill('')]);
+    list.forEach(emp=>{
+      const bu=employees.find(e=>e.name===emp.backup);
+      const row=[emp.name,ROLE_LABELS[emp.role],emp.ext,bu?.name||''];
+      let total=0;
+      DAYS.forEach((_,di)=>{
+        const c=schedule[emp.id]?.[di]||{};
+        const ml=c.morning&&c.morning!=='off'?SHIFT_LABELS[c.morning]:'';
+        const el=c.evening&&c.evening!=='off'?SHIFT_LABELS[c.evening]:'';
+        row.push(ml,el);
+        if(c.morning&&!['off','vacation','sick','reserve'].includes(c.morning))total++;
+        if(c.evening&&!['off','vacation','sick','reserve'].includes(c.evening))total++;
+      });
+      row.push(total,'');
+      wsData.push(row);
+    });
+    wsData.push(Array(18).fill(''));
+  });
+
+  // Daily summary
+  wsData.push(['סיכום יומי (יעד ערב: א=6, ב=8, ג=6, ד=8, ה=5, ו=0)','','','','ראשון','','שני','','שלישי','','רביעי','','חמישי','','שישי','','','']);
+  const mRow=['בוקר + WFH','','',''];
+  const eRow=['ערב','','',''];
+  const wRow=['WFH בלבד','','',''];
+  const oRow=['משרד בוקר','','',''];
+  DAYS.forEach((_,di)=>{
+    let m=0,e=0,wfh=0,office=0;
+    employees.forEach(emp=>{
+      const c=schedule[emp.id]?.[di]||{};
+      if(c.morning==='morning'){m++;office++;}
+      if(c.morning==='wfh'){m++;wfh++;}
+      if(c.evening==='evening')e++;
+    });
+    mRow.push(m,'');eRow.push(e,'');wRow.push(wfh,'');oRow.push(office,'');
+    const tgt=EVENING_TARGETS[di];
+    const eOk=di===5||(tgt===0)||e>=tgt;
+    summaryTarget+=`<td colspan="2" style="text-align:center;font-size:9px;font-weight:700;
+      border:1px solid #c8cce8;padding:3px;color:${eOk?'#1a9a5a':'#c0392b'};">${di===5?'—':tgt+' ('+e+')'}</td>`;
+  });
+  mRow.push('','');eRow.push('','');wRow.push('','');oRow.push('','');
+  wsData.push(mRow,eRow,wRow,oRow);
+
+  const ws=XLSX.utils.aoa_to_sheet(wsData);
+  ws['!cols']=[
+    {wch:14},{wch:8},{wch:8},{wch:12},
+    {wch:11},{wch:9},{wch:11},{wch:9},{wch:11},{wch:9},
+    {wch:11},{wch:9},{wch:11},{wch:9},{wch:11},{wch:9},
+    {wch:8},{wch:12}
+  ];
+  ws['!merges']=[{s:{r:0,c:0},e:{r:0,c:17}}];
+  XLSX.utils.book_append_sheet(wb,ws,'סידור שבועי');
+
+  /* ── Sheet 2: Employee Stats ── */
+  const s2=[
+    [`סיכום עובדים — ${weekLabel(weekKey)}`,...Array(10).fill('')],
+    Array(11).fill(''),
+    ['שם','תפקיד','מגבה','בוקר','WFH','ערב','חופש','מחלה','מילואים','סה"כ','תקין?']
+  ];
+  employees.forEach(emp=>{
+    const st=getEmpStats(emp.id,schedule);
+    const ok=emp.role==='mgr'||(st.total>=5&&st.wfh<=1)?'✓':'✗';
+    const bu=employees.find(e=>e.name===emp.backup);
+    s2.push([emp.name,ROLE_LABELS[emp.role],bu?.name||'',st.m,st.wfh,st.e,st.v,st.sick,st.res,st.total,ok]);
+  });
+  const ws2=XLSX.utils.aoa_to_sheet(s2);
+  ws2['!cols']=[{wch:14},{wch:8},{wch:14},{wch:6},{wch:6},{wch:6},{wch:6},{wch:6},{wch:8},{wch:8},{wch:7}];
+  ws2['!merges']=[{s:{r:0,c:0},e:{r:0,c:10}}];
+  XLSX.utils.book_append_sheet(wb,ws2,'סיכום עובדים');
+
+  XLSX.writeFile(wb,`סידור_${weekKey}.xlsx`);
+}
+
+/* ═══════════════════════════════════════
+   PDF EXPORT  — inline HTML → print-to-PDF
+═══════════════════════════════════════ */
+function exportToPDF(employees,schedule,duties,weekKey){
+  const wl=weekLabel(weekKey);
+
+  // Shift display helpers
+  const shiftBg={
+    morning:'#dde8ff',wfh:'#c8e8ff',evening:'#e8deff',
+    wfheve:'#b8d8f8',vacation:'#fff5c0',sick:'#ffe0e0',
+    reserve:'#ffecc0',off:'#f2f2f2'
+  };
+  const shiftColor={
+    morning:'#1a3a90',wfh:'#0a4a80',evening:'#3a1a90',
+    wfheve:'#0a3a70',vacation:'#6a4800',sick:'#800000',
+    reserve:'#603000',off:'#999'
+  };
+  const shiftTxt={
+    morning:'בוקר',wfh:'בוקר\nמהבית',evening:'ערב',
+    wfheve:'ערב\nמהבית',vacation:'חופש',sick:'מחלה',
+    reserve:'מילואים',off:'—'
+  };
+  const dayColors=['#1e3a6e','#1e4a6e','#1a3d5e','#1a3060','#1e2d6e','#2d1e6e'];
+
+  const cellHTML=(empId,dayIdx,period)=>{
+    const v=schedule[empId]?.[dayIdx]?.[period]||'off';
+    const bg=shiftBg[v]||'#f2f2f2';
+    const color=shiftColor[v]||'#666';
+    const txt=(shiftTxt[v]||'—').replace('\n','<br>');
+    return`<td style="background:${bg};color:${color};font-weight:700;font-size:8px;
+      text-align:center;padding:3px 1px;border:1px solid #c8cce8;line-height:1.2;">${txt}</td>`;
+  };
+
+  const groups=[
+    {label:'מנהלים',list:employees.filter(e=>e.role==='mgr')},
+    {label:'יועצים',list:employees.filter(e=>e.role==='adv')},
+    {label:'מתמחים',list:employees.filter(e=>e.role==='int')},
+  ];
+
+  let empRows='';
+  groups.forEach(({label,list})=>{
+    if(!list.length)return;
+    empRows+=`<tr><td colspan="${DAYS.length*2+2}" style="background:linear-gradient(90deg,#2a3f9e,#3a52b0);
+      color:#fff;font-size:9px;font-weight:800;padding:4px 10px;letter-spacing:1px;">${label} (${list.length})</td></tr>`;
+    list.forEach(emp=>{
+      const st=getEmpStats(emp.id,schedule);
+      const ok=emp.role==='mgr'||(st.total>=5&&st.wfh<=1);
+      const bu=employees.find(e=>e.name===emp.backup);
+      const bg=ok?'':'#fff8f0';
+      empRows+=`<tr style="background:${bg};">
+        <td style="background:#f0f2fa;padding:4px 6px;border:1px solid #c8cce8;white-space:nowrap;font-size:9px;border-right:2px solid #2a3f9e;">
+          <strong>${emp.name}</strong><br>
+          <span style="color:#8a93c0;font-size:8px;">📞${emp.ext}${bu?' | 📌'+bu.name:''}</span>
+        </td>`;
+      DAYS.forEach((_,di)=>{
+        empRows+=cellHTML(emp.id,di,'morning');
+        empRows+=cellHTML(emp.id,di,'evening');
+      });
+      empRows+=`<td style="text-align:center;font-size:9px;padding:2px;border:1px solid #c8cce8;
+        color:${ok?'#1a9a5a':'#c0392b'};font-weight:800;">${st.total}<br><span style="font-size:7px;">🏠${st.wfh}</span></td>`;
+      empRows+='</tr>';
+    });
+  });
+
+  // Daily summary row
+  let summaryMorn='',summaryEve='',summaryWfh='',summaryTarget='';
+  DAYS.forEach((_,di)=>{
+    let m=0,e=0,wfh=0;
+    employees.forEach(emp=>{
+      const c=schedule[emp.id]?.[di]||{};
+      if(c.morning==='morning')m++;
+      if(c.morning==='wfh'){m++;wfh++;}
+      if(c.evening==='evening')e++;
+    });
+    summaryMorn+=`<td colspan="2" style="text-align:center;font-size:9px;font-weight:700;
+      border:1px solid #c8cce8;padding:3px;color:#1a3a90;">☀️ ${m}</td>`;
+    summaryEve+=`<td colspan="2" style="text-align:center;font-size:9px;font-weight:700;
+      border:1px solid #c8cce8;padding:3px;color:#3a1a90;">🌙 ${e}</td>`;
+    summaryWfh+=`<td colspan="2" style="text-align:center;font-size:9px;font-weight:700;
+      border:1px solid #c8cce8;padding:3px;color:#0a4a80;">🏠 ${wfh}</td>`;
+  });
+
+  // Duties section
+  let dutyCols='';
+  DAYS.forEach((day,di)=>{
+    dutyCols+=`<td style="background:${dayColors[di]};color:#fff;font-weight:800;font-size:9px;
+      text-align:center;padding:5px 3px;border:1px solid rgba(255,255,255,0.2);">${day}</td>`;
+  });
+  let dutyRows='';
+  DUTY_TYPES.forEach((dtype,dti)=>{
+    let cells='';
+    DAYS.forEach((_,di)=>{
+      const name=duties[di]?.[dti]||'—';
+      cells+=`<td style="text-align:center;font-size:9px;padding:4px 3px;
+        border:1px solid #c8cce8;font-weight:600;">${name}</td>`;
+    });
+    dutyRows+=`<tr><td style="background:#f0f2fa;font-size:9px;font-weight:700;padding:4px 8px;
+      border:1px solid #c8cce8;border-right:2px solid #2a3f9e;">${dtype}</td>${cells}</tr>`;
+  });
+
+  const html=`<!DOCTYPE html><html dir="rtl"><head><meta charset="UTF-8">
+  <style>
+    *{box-sizing:border-box;margin:0;padding:0;}
+    body{font-family:'Arial','Heebo',sans-serif;direction:rtl;background:#fff;color:#1a1e3a;}
+    @page{size:A4 landscape;margin:6mm 5mm;}
+    @media print{body{font-size:9px;}}
+    table{border-collapse:collapse;width:100%;}
+    .page-title{font-size:16px;font-weight:900;color:#1e2d6e;margin-bottom:3px;}
+    .page-sub{font-size:10px;color:#6a7aaa;margin-bottom:10px;}
+    .section-title{font-size:11px;font-weight:800;color:#1e2d6e;margin:10px 0 4px;
+      padding-bottom:3px;border-bottom:2px solid #2a3f9e;}
+    .footer{text-align:center;font-size:8px;color:#aaa;margin-top:10px;
+      padding-top:5px;border-top:1px solid #ddd;}
+    .legend{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:8px;align-items:center;}
+    .legend-item{display:flex;align-items:center;gap:4px;font-size:8px;}
+    .legend-dot{width:10px;height:10px;border-radius:2px;border:1px solid rgba(0,0,0,0.15);}
+  </style></head><body>
+  <div class="page-title">📊 מרכז יועצי השקעות — סידור עבודה שבועי</div>
+  <div class="page-sub">שבוע: ${wl} | הופק: ${new Date().toLocaleDateString('he-IL')} | © כל הזכויות שמורות לאלעד</div>
+
+  <div class="legend">
+    ${[['#dde8ff','#1a3a90','☀️ בוקר'],['#c8e8ff','#0a4a80','🏠 WFH'],['#e8deff','#3a1a90','🌙 ערב'],
+      ['#fff5c0','#6a4800','🌴 חופש'],['#ffe0e0','#800000','🤒 מחלה'],['#ffecc0','#603000','🪖 מילואים'],['#f2f2f2','#999','➖ חופשי']
+    ].map(([bg,color,lbl])=>`<div class="legend-item"><div class="legend-dot" style="background:${bg};"></div><span style="color:${color};font-weight:700;">${lbl}</span></div>`).join('')}
+  </div>
+
+  <div class="section-title">לוח משמרות שבועי</div>
+  <table>
+    <thead>
+      <tr>
+        <th rowspan="2" style="background:#1a2560;color:#fff;padding:6px 8px;text-align:right;
+          border:1px solid rgba(255,255,255,0.2);font-size:9px;min-width:100px;">שם עובד</th>
+        ${DAYS.map((d,di)=>`<th colspan="2" style="background:${dayColors[di]};color:#fff;
+          text-align:center;padding:6px 4px;border:1px solid rgba(255,255,255,0.2);font-size:10px;font-weight:800;">${d}</th>`).join('')}
+        <th rowspan="2" style="background:#1a2560;color:#fff;padding:6px 4px;text-align:center;
+          border:1px solid rgba(255,255,255,0.2);font-size:9px;min-width:38px;">סה"כ</th>
+      </tr>
+      <tr>
+        ${DAYS.map(()=>`
+          <th style="background:#2a3f9e;color:rgba(255,255,255,0.85);text-align:center;
+            padding:4px 2px;border:1px solid rgba(255,255,255,0.15);font-size:8px;">בוקר</th>
+          <th style="background:#2a3f9e;color:rgba(255,255,255,0.85);text-align:center;
+            padding:4px 2px;border:1px solid rgba(255,255,255,0.15);font-size:8px;">ערב</th>`).join('')}
+      </tr>
+    </thead>
+    <tbody>
+      ${empRows}
+      <tr style="background:#eef0fa;">
+        <td style="font-size:9px;font-weight:800;padding:4px 8px;border:1px solid #c8cce8;
+          border-right:2px solid #2a3f9e;color:#1e2d6e;">סיכום בוקר</td>${summaryMorn}<td style="border:1px solid #c8cce8;"></td></tr>
+      <tr style="background:#f4f0fa;">
+        <td style="font-size:9px;font-weight:800;padding:4px 8px;border:1px solid #c8cce8;
+          border-right:2px solid #2a3f9e;color:#3a1a90;">סיכום ערב</td>${summaryEve}<td style="border:1px solid #c8cce8;"></td></tr>
+      <tr style="background:#eef6ff;">
+        <td style="font-size:9px;font-weight:800;padding:4px 8px;border:1px solid #c8cce8;
+          border-right:2px solid #2a3f9e;color:#0a4a80;">סיכום WFH</td>${summaryWfh}<td style="border:1px solid #c8cce8;"></td></tr>
+      <tr style="background:#f0fff4;">
+        <td style="font-size:9px;font-weight:800;padding:4px 8px;border:1px solid #c8cce8;
+          border-right:2px solid #2a3f9e;color:#1a6a40;">יעד ערב (בפועל)</td>${summaryTarget}<td style="border:1px solid #c8cce8;"></td></tr>
+    </tbody>
+  </table>
+
+  <div class="section-title">תורנויות שבועיות</div>
+  <table>
+    <thead>
+      <tr>
+        <th style="background:#1a2560;color:#fff;padding:5px 8px;text-align:right;
+          font-size:9px;border:1px solid rgba(255,255,255,0.2);min-width:90px;">תפקיד תורן</th>
+        ${dutyCols}
+      </tr>
+    </thead>
+    <tbody>${dutyRows}</tbody>
+  </table>
+
+  <div class="footer">© כל הזכויות שמורות לאלעד | מרכז יועצי השקעות — מערכת סידור עבודה שבועי | ${wl}</div>
+  <script>window.onload=()=>window.print();<\/script>
+  </body></html>`;
+
+  const w=window.open('','_blank','width=1200,height=800');
+  w.document.write(html);
+  w.document.close();
+}
+
+/* ═══════════════════════════════════════
+   COMPONENTS
+═══════════════════════════════════════ */
+function ShiftCell({type,onClick}){
+  return <div className={`sc ${SHIFT_CSS[type]||'sc-off'}`} onClick={onClick}>{SHIFT_LABELS[type]||'—'}</div>;
+}
+function CellDD({value,onChange}){
+  const[open,setOpen]=useState(false);
+  const ref=useRef();
+  useEffect(()=>{
+    if(!open)return;
+    const h=e=>{if(ref.current&&!ref.current.contains(e.target))setOpen(false);};
+    document.addEventListener('mousedown',h);
+    return()=>document.removeEventListener('mousedown',h);
+  },[open]);
+  return(
+    <div className="dd-wrap" ref={ref}>
+      <ShiftCell type={value} onClick={()=>setOpen(o=>!o)}/>
+      {open&&(
+        <div className="dd-menu" onClick={e=>e.stopPropagation()}>
+          {SHIFT_TYPES.map(t=>(
+            <div key={t} className="dd-opt" style={value===t?{background:'#f0f4ff'}:{}}
+              onClick={()=>{onChange(t);setOpen(false);}}>
+              <span className="dd-dot" style={{background:SHIFT_COLORS[t],border:'1px solid rgba(0,0,0,0.1)'}}></span>
+              {SHIFT_LABELS[t]}
+              {value===t&&<span className="dd-check">✓</span>}
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
+function EmpStatsBadges({empId,schedule}){
+  const st=getEmpStats(empId,schedule);
+  const ok=st.total>=5&&st.wfh<=1;
+  return(
+    <div className="stat-row">
+      <span className={`sb ${ok?'sb-ok':'sb-bad'}`}>{st.total} משמ׳</span>
+      <span className="sb sb-info">🏠{st.wfh}</span>
+      {st.v>0&&<span className="sb" style={{background:'#fffbe8',color:'#8a6000',borderColor:'#e8c840'}}>🌴{st.v}</span>}
+      {st.sick>0&&<span className="sb" style={{background:'#ffeeee',color:'#b02020',borderColor:'#f0a0a0'}}>🤒{st.sick}</span>}
+      {st.res>0&&<span className="sb" style={{background:'#fff8e8',color:'#805000',borderColor:'#e8c080'}}>🪖{st.res}</span>}
+    </div>
+  );
+}
+
+
+
+// Check if a day is a holiday for all active employees
+function getDayHolidayType(employees, schedule, dayIdx){
+  const active=employees.filter(e=>e.role!=='mgr');
+  if(!active.length)return null;
+  const allHoliday=active.every(e=>{
+    const c=schedule[e.id]?.[dayIdx]||{};
+    return c.morning==='holiday'||c.morning==='vacation';
+  });
+  const allHalf=active.every(e=>{
+    const c=schedule[e.id]?.[dayIdx]||{};
+    return c.evening==='half'||c.morning==='half';
+  });
+  if(allHoliday)return'holiday';
+  // Check if majority have holiday
+  const holidayCount=active.filter(e=>{const c=schedule[e.id]?.[dayIdx]||{};return c.morning==='holiday';}).length;
+  if(holidayCount>=active.length*0.8)return'holiday';
+  return null;
+}
+
+/* ─── FRIDAY PANEL ─── */
+function FridayPanel({employees,weekKey,schedule,setSchedule}){
+  const weekIdx=getWeekIndex(weekKey||thisWeekSunday());
+  const autoTeam=getFridayTeam(employees,weekIdx);
+  // Allow manual overrides stored per week
+  const storageKey='friday_overrides_v1';
+  const savedOverrides=()=>{try{return JSON.parse(localStorage.getItem(storageKey)||'{}')}catch{return{}}};
+
+  const[editing,setEditing]=useState(false);
+  const[overrides,setOverrides]=useState(savedOverrides);
+
+  // Get current team: use override for this week if exists, else auto
+  const weekOverride=overrides[weekKey];
+  const team=weekOverride||autoTeam;
+  const allWorkers=[...team.advisors,team.senior].filter(Boolean);
+
+  const saveOverride=(advisors,senior)=>{
+    const o={...overrides,[weekKey]:{advisors,senior}};
+    setOverrides(o);
+    try{localStorage.setItem(storageKey,JSON.stringify(o));}catch{}
+  };
+
+  const applyFriday=(customTeam)=>{
+    const t=customTeam||team;
+    const workers=[...t.advisors,t.senior].filter(Boolean);
+    setSchedule(prev=>{
+      const next=JSON.parse(JSON.stringify(prev));
+      const workerSet=new Set(workers);
+      employees.forEach(emp=>{
+        if(emp.role==='mgr')return;
+        if(!next[emp.id])next[emp.id]={};
+        if(workerSet.has(emp.name)){
+          next[emp.id][5]={morning:'morning',evening:'off'};
+          next[emp.id][0]={morning:'vacation',evening:'off'};
+        } else {
+          next[emp.id][5]={morning:'off',evening:'off'};
+        }
+      });
+      return next;
+    });
+  };
+
+  // Edit modal state
+  const[selAdvisors,setSelAdvisors]=useState([...autoTeam.advisors]);
+  const[selSenior,setSelSenior]=useState(autoTeam.senior);
+
+  const advPool=employees.filter(e=>e.role==='adv'||e.role==='tl');
+  const mgrPool=employees.filter(e=>isSenior(e.role));
+
+  const toggleAdv=(name)=>{
+    setSelAdvisors(prev=>
+      prev.includes(name)?prev.filter(n=>n!==name):[...prev,name].slice(0,FRIDAY_ADVISORS)
+    );
+  };
+
+  const applyEdit=()=>{
+    saveOverride(selAdvisors,selSenior);
+    applyFriday({advisors:selAdvisors,senior:selSenior});
+    setEditing(false);
+  };
+
+  return(
+    <>
+    <div style={{background:'#fff8f0',border:'1.5px solid #e8c080',borderRadius:9,
+      margin:'10px 20px 0',padding:'10px 14px',display:'flex',alignItems:'center',gap:12,flexWrap:'wrap'}}>
+      <div>
+        <span style={{fontSize:12,fontWeight:800,color:'#804000'}}>🗓️ שישי — שבוע {weekIdx%52+1}</span>
+        {weekOverride&&<span style={{fontSize:10,background:'#fff0d0',color:'#804000',padding:'1px 6px',borderRadius:10,marginRight:6,fontWeight:700}}>ידני</span>}
+        {!weekOverride&&<span style={{fontSize:10,color:'#a07030',marginRight:6}}>סבב אוטומטי</span>}
+      </div>
+      <div style={{display:'flex',gap:5,flexWrap:'wrap',flex:1,alignItems:'center'}}>
+        {team.advisors.map(n=><span key={n} style={{background:'#ddeeff',color:'#1a3a90',
+          padding:'2px 9px',borderRadius:5,fontSize:11,fontWeight:700,border:'1px solid #b0c8f0'}}>💼 {n}</span>)}
+        {team.senior&&<span style={{background:'#ede0ff',color:'#5a2090',
+          padding:'2px 9px',borderRadius:5,fontSize:11,fontWeight:700,border:'1px solid #c0a8f0'}}>👔 {team.senior}</span>}
+        <span style={{fontSize:10,color:'#a07030'}}>| יום א׳ = חופשי לעובדי שישי</span>
+      </div>
+      <div style={{display:'flex',gap:6'}}>
+        <button className="btn btn-warning btn-sm" onClick={()=>applyFriday()}>⚡ הפעל</button>
+        <button className="btn btn-ghost btn-sm" onClick={()=>{setSelAdvisors([...team.advisors]);setSelSenior(team.senior);setEditing(true);}}>✏️ שנה</button>
+        {weekOverride&&<button className="btn btn-ghost btn-sm" style={{color:'#c0392b'}} onClick={()=>{const o={...overrides};delete o[weekKey];setOverrides(o);try{localStorage.setItem(storageKey,JSON.stringify(o));}catch{}}} title="אפס לסבב אוטומטי">✕</button>}
+      </div>
+    </div>
+
+    {editing&&(
+      <div className="modal-overlay">
+        <div className="modal" style={{minWidth:440}}>
+          <h3>✏️ עריכת עובדי שישי — שבוע {weekIdx%52+1}</h3>
+          <p style={{fontSize:12,color:'var(--text2)',marginBottom:14}}>
+            בחר {FRIDAY_ADVISORS} יועצים ומנהל אחד. מי שעבד השבוע לא יוצע לשבוע הבא בסבב האוטומטי.
+          </p>
+          <div className="fg">
+            <label>💼 יועצים ({selAdvisors.length}/{FRIDAY_ADVISORS}) — לחץ לבחירה/ביטול</label>
+            <div style={{display:'flex',flexWrap:'wrap',gap:6,marginTop:6}}>
+              {advPool.map(e=>{
+                const sel=selAdvisors.includes(e.name);
+                return(<div key={e.id}
+                  onClick={()=>toggleAdv(e.name)}
+                  style={{padding:'5px 11px',borderRadius:6,cursor:'pointer',fontSize:12,fontWeight:700,
+                    background:sel?'#1e2d6e':'#f0f2fb',color:sel?'#fff':'#4a5280',
+                    border:sel?'1.5px solid #3a52b0':'1.5px solid #d4d8ee',
+                    opacity:(!sel&&selAdvisors.length>=FRIDAY_ADVISORS)?0.4:1}}>
+                  {sel?'✓ ':''}{e.name}
+                </div>);
+              })}
+            </div>
+          </div>
+          <div className="fg">
+            <label>👔 מנהל / ראש צוות אחד</label>
+            <select className="fc" value={selSenior} onChange={e=>setSelSenior(e.target.value)}>
+              <option value="">— ללא —</option>
+              {mgrPool.map(e=><option key={e.id} value={e.name}>{e.name} ({ROLE_LABELS[e.role]})</option>)}
+            </select>
+          </div>
+          <div className="modal-actions">
+            <button className="btn btn-ghost" onClick={()=>setEditing(false)}>ביטול</button>
+            <button className="btn btn-primary"
+              disabled={selAdvisors.length!==FRIDAY_ADVISORS}
+              onClick={applyEdit}>הפעל ושמור</button>
+          </div>
+        </div>
+      </div>
+    )}
+    </>
+  );
+}
+
+/* ─── SCHEDULE TAB ─── */
+function ScheduleTab({employees,schedule,setSchedule,duties,setDuties,warMode,onAutoGenDuties,weekKey}){
+  const getV=(eid,d,p)=>schedule[eid]?.[d]?.[p]||'off';
+  const setV=(eid,d,p,v)=>setSchedule(prev=>({
+    ...prev,[eid]:{...(prev[eid]||{}),[d]:{...(prev[eid]?.[d]||{}),[p]:v}}
+  }));
+  const warnings=[];
+  employees.forEach(emp=>{
+    if(isSenior(emp.role))return;
+    const st=getEmpStats(emp.id,schedule);
+    if(st.total<5)warnings.push(`${emp.name}: רק ${st.total} משמרות`);
+    if(st.wfh>1)warnings.push(`${emp.name}: ${st.wfh} ימי WFH`);
+  });
+  // Check evening staffing targets per day
+  DAYS.forEach((day,di)=>{
+    const target=EVENING_TARGETS[di];
+    if(target===0)return;
+    const actualEve=employees.filter(e=>{const c=schedule[e.id]?.[di]||{};return c.evening==='evening';}).length;
+    if(actualEve<target)warnings.push(`${day} ערב: ${actualEve}/${target} עובדים`);
+  });
+  // Friday staffing check
+  const fridayAdvs=employees.filter(e=>{const c=schedule[e.id]?.[5]||{};return['morning','wfh'].includes(c.morning)&&!isSenior(e.role);}).length;
+  const fridayMgrs=employees.filter(e=>{const c=schedule[e.id]?.[5]||{};return['morning','wfh'].includes(c.morning)&&isSenior(e.role);}).length;
+  if(fridayAdvs!==FRIDAY_ADVISORS)warnings.push(`שישי: ${fridayAdvs}/${FRIDAY_ADVISORS} יועצים`);
+  if(fridayMgrs!==FRIDAY_SENIORS)warnings.push(`שישי: ${fridayMgrs}/${FRIDAY_SENIORS} מנהלים`);
+  // Check every day has at least 1 senior per shift period
+  DAYS.forEach((day,di)=>{
+    const morningWorkers=employees.filter(e=>{const c=schedule[e.id]?.[di]||{};return['morning','wfh'].includes(c.morning);});
+    const eveningWorkers=employees.filter(e=>{const c=schedule[e.id]?.[di]||{};return c.evening==='evening'||c.morning==='wfheve';});
+    const hasSrMorn=morningWorkers.some(e=>isSenior(e.role));
+    const hasSrEve=eveningWorkers.some(e=>isSenior(e.role));
+    if(morningWorkers.length>0&&!hasSrMorn)warnings.push(`${day} בוקר: אין מנהל/ראש צוות`);
+    if(eveningWorkers.length>0&&!hasSrEve)warnings.push(`${day} ערב: אין מנהל/ראש צוות`);
+  });
+  const groups=[
+    {label:'👔 מנהלים',list:employees.filter(e=>e.role==='mgr')},
+    {label:'💼 יועצים וראשי צוות',list:employees.filter(e=>e.role==='adv'||e.role==='tl')},
+    {label:'📚 מתמחים',list:employees.filter(e=>e.role==='int')},
+  ];
+  return(
+    <div>
+      <div className="warn-bar">
+        {warnings.length===0
+          ?<div className="warn warn-ok">✅ הסידור תקין — כל העובדים עומדים בדרישות</div>
+          :warnings.map((w,i)=><div key={i} className="warn warn-bad">⚠️ {w}</div>)
+        }
+        {warMode&&<div className="warn" style={{background:'#fff0f0',color:'#800000',border:'1px solid #f0b0b0',fontWeight:800}}>🪖 מצב מלחמה פעיל — בוקר מהבית</div>}
+      </div>
+      {/* FRIDAY ROTATION INFO */}
+      <FridayPanel employees={employees} weekKey={weekKey} schedule={schedule} setSchedule={setSchedule}/>
+      <div className="tbl-outer">
+        <table className="sched-table">
+          <thead>
+            <tr>
+              <th style={{right:0,zIndex:70,minWidth:115,textAlign:'right',paddingRight:10}}>שם עובד</th>
+              {DAYS.map((d,di)=><th key={d} colSpan={2} className={`day-hdr day-${di}`}>{DAY_EMOJIS[di]} {d}</th>)}
+              <th>סטטוס</th>
+            </tr>
+            <tr>
+              {DAYS.map((d,di)=>[
+                <th key={d+'m'} className={`sub-hdr`}>☀️ בוקר</th>,
+                <th key={d+'e'} className={`sub-hdr`}>🌙 ערב</th>
+              ])}
+            </tr>
+          </thead>
+          <tbody>
+            {/* Holiday banner rows */}
+            {DAYS.map((_,di)=>{
+              const htype=getDayHolidayType(employees,schedule,di);
+              if(!htype)return null;
+              const isHalf=employees.filter(e=>{const c=schedule[e.id]?.[di]||{};return c.evening==='half';}).length>employees.length/2;
+              const label=isHalf?'🌅 ערב חג — חצי יום, חג שמח! 🎊':'🎉 חג שמח! המרכז סגור היום 🎊';
+              const bg=isHalf?'linear-gradient(90deg,#fff8e0,#fef0c0,#fff8e0)':'linear-gradient(90deg,#ffe8f4,#ffd0e8,#ffe8f4)';
+              return(
+                <tr key={'holiday-'+di}>
+                  <td colSpan={DAYS.length*2+2} style={{
+                    background:bg,textAlign:'center',padding:'12px',
+                    fontSize:14,fontWeight:800,color:isHalf?'#804000':'#800050',
+                    borderTop:'2px solid '+(isHalf?'#e8a040':'#d890b8'),
+                    borderBottom:'2px solid '+(isHalf?'#e8a040':'#d890b8'),
+                    letterSpacing:1,
+                  }}>
+                    {DAYS[di]}: {label}
+                  </td>
+                </tr>
+              );
+            })}
+            {groups.map(({label,list})=>list.length===0?null:[
+              <tr key={label} className="role-divider"><td colSpan={DAYS.length*2+2}>{label} ({list.length})</td></tr>,
+              ...list.map(emp=>{
+                const bu=employees.find(e=>e.name===emp.backup);
+                return(
+                  <tr key={emp.id}>
+                    <td className="name-cell">
+                      <div className="emp-name">{emp.name}</div>
+                      <div className="emp-ext">📞 {emp.ext}</div>
+                      {bu&&<div className="emp-backup">📌 {bu.name}</div>}
+                      <span className={`emp-role-badge ${ROLE_CSS[emp.role]}`}>{ROLE_LABELS[emp.role]}</span>
+                    </td>
+                    {DAYS.map((_,di)=>[
+                      <td key={di+'m'} className={`col-day-${di}`}><CellDD value={getV(emp.id,di,'morning')} onChange={v=>setV(emp.id,di,'morning',v)}/></td>,
+                      <td key={di+'e'} className={`col-day-${di}`}><CellDD value={getV(emp.id,di,'evening')} onChange={v=>setV(emp.id,di,'evening',v)}/></td>
+                    ])}
+                    <td style={{padding:'4px',minWidth:80}}><EmpStatsBadges empId={emp.id} schedule={schedule}/></td>
+                  </tr>
+                );
+              })
+            ])}
+          </tbody>
+        </table>
+      </div>
+      {/* DUTIES */}
+      <div className="duties-wrap">
+        <div className="duties-hdr">
+          <h3>📋 תורנויות שבועיות</h3>
+          <button className="btn btn-warning btn-sm" onClick={onAutoGenDuties}>⚡ ייצר תורנויות אוטומטי</button>
+        </div>
+        <div className="duties-grid">
+          {DAYS.map((day,di)=>(
+            <div key={di} className={`duty-col duty-col-${di}`}>
+              <div className={`duty-day-hdr duty-day-hdr-${di}`}>{DAY_EMOJIS[di]} {day}</div>
+              {DUTY_TYPES.map((duty,dti)=>{
+                // For דיווצי בוקר/ערב (indices 3,4) show count badge
+                const isCount=dti===3||dti===4;
+                const period=dti===4?'evening':'morning';
+                const countWorkers=isCount?employees.filter(e=>{
+                  const c=schedule[e.id]?.[di]||{};
+                  if(period==='morning')return['morning','wfh'].includes(c.morning);
+                  return c.evening==='evening'||c.morning==='wfheve';
+                }).length:0;
+                return(
+                <div key={dti} className="duty-item">
+                  <div className="duty-lbl" style={{display:'flex',justifyContent:'space-between',alignItems:'center'}}>
+                    <span>{duty}</span>
+                    {isCount&&<span style={{background:'#1e2d6e',color:'#fff',borderRadius:10,
+                      fontSize:9,padding:'1px 6px',fontWeight:800}}>{countWorkers}</span>}
+                  </div>
+                  {!isCount&&<select className="duty-sel"
+                    value={duties[di]?.[dti]||''}
+                    onChange={e=>setDuties(prev=>({...prev,[di]:{...(prev[di]||{}),[dti]:e.target.value}}))}>
+                    <option value="">—</option>
+                    {employees.map(emp=><option key={emp.id} value={emp.name}>{emp.name}</option>)}
+                  </select>}
+                  {isCount&&<div style={{fontSize:11,fontWeight:700,color:'#1e2d6e',
+                    padding:'4px 6px',background:'#eef2ff',borderRadius:5,textAlign:'center',marginTop:2}}>
+                    {employees.filter(e=>{
+                      const c=schedule[e.id]?.[di]||{};
+                      if(period==='morning')return['morning','wfh'].includes(c.morning);
+                      return c.evening==='evening';
+                    }).map(e=>e.name).join(', ')||'אין'}
+                  </div>}
+                </div>
+              );})}
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/* ─── MANAGER SUMMARY TAB ─── */
+function ManagerTab({employees,schedule}){
+  const[auth,setAuth]=useState(false);
+  if(!auth) return(
+    <div className="wrap" style={{display:'flex',justifyContent:'center',paddingTop:40}}>
+      <div style={{background:'#fff',border:'1.5px solid var(--border2)',borderRadius:14,padding:28,
+        minWidth:300,textAlign:'center',boxShadow:'var(--shadow-md)'}}>
+        <div style={{fontSize:36,marginBottom:10}}>🔐</div>
+        <div style={{fontSize:15,fontWeight:800,marginBottom:8}}>דוח מנהל</div>
+        <div style={{fontSize:12,color:'var(--text2)',marginBottom:16}}>הזן קוד כדי לצפות בדוח</div>
+        <input type="password" className="fc" placeholder="קוד גישה"
+          onKeyDown={e=>{if(e.key==='Enter'){if(e.target.value==='749')setAuth(true);else alert('קוד שגוי');}}}
+          style={{textAlign:'center',letterSpacing:4,fontSize:18}}/>
+        <button className="btn btn-primary" style={{width:'100%',justifyContent:'center',marginTop:10}}
+          onClick={e=>{const inp=e.target.previousSibling;if(inp.value==='749')setAuth(true);else alert('קוד שגוי');}}>
+          כניסה
+        </button>
+      </div>
+    </div>
+  );
+  const stats=useMemo(()=>employees.map(emp=>({emp,...getEmpStats(emp.id,schedule)})),[employees,schedule]);
+  const advStats=stats.filter(s=>s.emp.role==='adv');
+
+  const avgTotal=advStats.length?advStats.reduce((a,s)=>a+s.total,0)/advStats.length:0;
+  const avgEve=advStats.length?advStats.reduce((a,s)=>a+s.e,0)/advStats.length:0;
+
+  const alerts=[];
+
+  // Absent all week
+  stats.filter(s=>s.emp.role!=='mgr').forEach(s=>{
+    const allOff=Object.values(schedule[s.emp.id]||{}).every(c=>
+      ['off','vacation','sick','reserve'].includes(c.morning)&&['off','vacation','sick','reserve'].includes(c.evening));
+    if(allOff)alerts.push({level:'high',icon:'🔴',title:`${s.emp.name} — לא נמצא השבוע`,body:`חופש / מחלה / מילואים לכל השבוע. יש לוודא שיש מגבה.`});
+  });
+
+  // Heavy load
+  advStats.filter(s=>s.total>=avgTotal+2).forEach(s=>{
+    alerts.push({level:'med',icon:'🟡',title:`${s.emp.name} — עומס גבוה`,body:`${s.total} משמרות השבוע (ממוצע: ${avgTotal.toFixed(1)}). שקול לאזן.`});
+  });
+
+  // Light load
+  advStats.filter(s=>s.total>0&&s.total<=avgTotal-2).forEach(s=>{
+    alerts.push({level:'low',icon:'🟢',title:`${s.emp.name} — עומס נמוך`,body:`רק ${s.total} משמרות השבוע (ממוצע: ${avgTotal.toFixed(1)}).`});
+  });
+
+  // No WFH
+  advStats.filter(s=>s.total>0&&s.wfh===0&&s.v===0&&s.sick===0&&s.res===0).forEach(s=>{
+    alerts.push({level:'med',icon:'🏠',title:`${s.emp.name} — אין WFH`,body:`לא הוגדר יום עבודה מהבית השבוע.`});
+  });
+
+  // Too many evenings
+  advStats.filter(s=>s.e>=avgEve+1.5).forEach(s=>{
+    alerts.push({level:'med',icon:'🌙',title:`${s.emp.name} — ערבים רבים`,body:`${s.e} משמרות ערב השבוע (ממוצע: ${avgEve.toFixed(1)}).`});
+  });
+
+  // Sick multiple days
+  stats.filter(s=>s.sick>=3).forEach(s=>{
+    alerts.push({level:'high',icon:'🤒',title:`${s.emp.name} — מחלה מרובת ימים`,body:`${s.sick} ימי מחלה השבוע. יש לוודא מגבה.`});
+  });
+
+  if(alerts.length===0){
+    alerts.push({level:'low',icon:'✅',title:'הכל תקין',body:'לא זוהו חריגות בסידור השבועי.'});
+  }
+
+  // Summary counts
+  const totalMorning=advStats.reduce((a,s)=>a+s.m,0);
+  const totalEvening=advStats.reduce((a,s)=>a+s.e,0);
+  const totalWFH=advStats.reduce((a,s)=>a+s.wfh,0);
+  const totalVac=advStats.reduce((a,s)=>a+s.v,0);
+  const totalSick=advStats.reduce((a,s)=>a+s.sick,0);
+  const totalRes=advStats.reduce((a,s)=>a+s.res,0);
+
+  const alertCss={high:'alert-high',med:'alert-med',low:'alert-low',info:'alert-info'};
+
+  return(
+    <div className="wrap">
+      {/* KPIs */}
+      <div className="sum-cards" style={{marginBottom:20}}>
+        <div className="sum-card"><div className="val" style={{color:'#3a5ab8'}}>{totalMorning}</div><div className="lbl">☀️ בוקר (יועצים)</div></div>
+        <div className="sum-card"><div className="val" style={{color:'#5a3ab8'}}>{totalEvening}</div><div className="lbl">🌙 ערב (יועצים)</div></div>
+        <div className="sum-card"><div className="val" style={{color:'#1a6ab8'}}>{totalWFH}</div><div className="lbl">🏠 WFH</div></div>
+        <div className="sum-card"><div className="val" style={{color:'#8a6000'}}>{totalVac}</div><div className="lbl">🌴 חופשות</div></div>
+        <div className="sum-card"><div className="val" style={{color:'#b02020'}}>{totalSick}</div><div className="lbl">🤒 מחלות</div></div>
+        <div className="sum-card"><div className="val" style={{color:'#805000'}}>{totalRes}</div><div className="lbl">🪖 מילואים</div></div>
+        <div className="sum-card"><div className="val" style={{color:'#1a9a5a'}}>{avgTotal.toFixed(1)}</div><div className="lbl">📊 ממוצע משמרות</div></div>
+      </div>
+
+      {/* Alerts */}
+      <div className="acard">
+        <div className="acard-hdr">🚨 דגשים והתראות ({alerts.length})</div>
+        <div className="acard-body">
+          <div className="mgr-alerts">
+            {alerts.map((a,i)=>(
+              <div key={i} className={`alert-item ${alertCss[a.level]}`}>
+                <div className="alert-icon">{a.icon}</div>
+                <div className="alert-body"><strong>{a.title}</strong>{a.body}</div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      {/* Per-employee breakdown */}
+      <div className="acard">
+        <div className="acard-hdr">📋 פירוט לפי עובד</div>
+        <div className="acard-body" style={{overflowX:'auto'}}>
+          <table style={{width:'100%',borderCollapse:'collapse',fontSize:12}}>
+            <thead>
+              <tr style={{background:'#1e2d6e',color:'#fff'}}>
+                {['שם','תפקיד','בוקר','WFH','ערב','חופש','מחלה','מילואים','סה"כ','תקין?'].map(h=>(
+                  <th key={h} style={{padding:'7px 10px',textAlign:'right',border:'1px solid rgba(255,255,255,0.15)'}}>{h}</th>
+                ))}
+              </tr>
+            </thead>
+            <tbody>
+              {stats.map((s,i)=>{
+                const ok=s.emp.role==='mgr'||(s.total>=5&&s.wfh<=1);
+                return(
+                  <tr key={s.emp.id} style={{background:i%2===0?'#fff':'#f8f9fe'}}>
+                    <td style={{padding:'6px 10px',fontWeight:700,border:'1px solid #e0e4f0'}}>{s.emp.name}</td>
+                    <td style={{padding:'6px 10px',border:'1px solid #e0e4f0'}}><span className={`emp-role-badge ${ROLE_CSS[s.emp.role]}`}>{ROLE_LABELS[s.emp.role]}</span></td>
+                    <td style={{padding:'6px 10px',textAlign:'center',border:'1px solid #e0e4f0'}}>{s.m}</td>
+                    <td style={{padding:'6px 10px',textAlign:'center',border:'1px solid #e0e4f0',color:'#1a6ab8',fontWeight:700}}>{s.wfh}</td>
+                    <td style={{padding:'6px 10px',textAlign:'center',border:'1px solid #e0e4f0'}}>{s.e}</td>
+                    <td style={{padding:'6px 10px',textAlign:'center',border:'1px solid #e0e4f0',color:s.v>0?'#8a6000':''}}>{s.v||'—'}</td>
+                    <td style={{padding:'6px 10px',textAlign:'center',border:'1px solid #e0e4f0',color:s.sick>0?'#b02020':''}}>{s.sick||'—'}</td>
+                    <td style={{padding:'6px 10px',textAlign:'center',border:'1px solid #e0e4f0',color:s.res>0?'#805000':''}}>{s.res||'—'}</td>
+                    <td style={{padding:'6px 10px',textAlign:'center',border:'1px solid #e0e4f0',fontWeight:800}}>{s.total}</td>
+                    <td style={{padding:'6px 10px',textAlign:'center',border:'1px solid #e0e4f0',
+                      color:ok?'#1a9a5a':'#c0392b',fontWeight:800}}>{ok?'✓':'✗'}</td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/* ─── CONSTRAINTS TAB ─── */
+const DEF_CON={targetMorning:3,targetEvening:2,targetWFH:1,minPerShift:8,maxEvening:12};
+
+function ConstraintsTab({employees,onGenerate}){
+  const[con,setCon]=useState(()=>LS.get('con_v2',DEF_CON));
+  const[ec,setEc]=useState(()=>LS.get('ec_v2',{}));
+  const[result,setResult]=useState(null);
+  useEffect(()=>LS.set('con_v2',con),[con]);
+  useEffect(()=>LS.set('ec_v2',ec),[ec]);
+
+  const toggle=(empId,type,di)=>{
+    setEc(prev=>{
+      const cur=prev[empId]||{};
+      const arr=new Set(cur[type]||[]);
+      if(arr.has(di))arr.delete(di);else arr.add(di);
+      return{...prev,[empId]:{...cur,[type]:[...arr]}};
+    });
+  };
+  const handleGen=()=>{
+    const sched=generateSchedule(employees,con,ec);
+    onGenerate(sched);
+    setResult('ok');setTimeout(()=>setResult(null),4000);
+  };
+
+  const advs=employees.filter(e=>e.role==='adv');
+
+  // Day colors for constraint table sections
+  const daySectionColors=['#1e3a6e','#1e4a6e','#1a3d5e','#1a3060','#1e2d6e','#2d1e6e'];
+
+  return(
+    <div className="wrap">
+      <div className="con-grid">
+        <div className="acard">
+          <div className="acard-hdr">⚙️ כללי משמרות</div>
+          <div className="acard-body">
+            {[
+              {label:'בוקר לעובד בשבוע',key:'targetMorning',min:1,max:5},
+              {label:'ערב לעובד בשבוע',key:'targetEvening',min:0,max:4},
+              {label:'WFH לעובד בשבוע',key:'targetWFH',min:0,max:3},
+              {label:'מינ׳ עובדים בבוקר',key:'minPerShift',min:1,max:20},
+              {label:'מקס׳ עובדים בערב',key:'maxEvening',min:1,max:20},
+            ].map(({label,key,min,max})=>(
+              <div key={key} className="con-row">
+                <span className="con-label">{label}</span>
+                <input type="number" className="con-input" min={min} max={max} value={con[key]}
+                  onChange={e=>setCon(p=>({...p,[key]:Number(e.target.value)}))}/>
+              </div>
+            ))}
+          </div>
+        </div>
+        <div className="acard">
+          <div className="acard-hdr">🤖 ייצור אוטומטי</div>
+          <div className="acard-body">
+            <p style={{fontSize:12,color:'var(--text2)',lineHeight:1.8,marginBottom:14}}>
+              ✔ יוצר סידור מאוזן לפי הכללים<br/>
+              ✔ מכבד אילוצים אישיים מהטבלה<br/>
+              ✔ מחלק ערבים אחיד ככל האפשר<br/>
+              ✔ ניתן לעריכה מלאה לאחר הייצור
+            </p>
+            <button className="btn btn-primary" style={{width:'100%',justifyContent:'center',padding:10}} onClick={handleGen}>
+              ⚡ ייצר סידור עכשיו
+            </button>
+            {result==='ok'&&<div className="gen-result gen-ok" style={{marginTop:10}}>✅ הסידור נוצר! עבור לטאב "סידור שבועי".</div>}
+            <div className="tip-box">
+              💡 הסידור החדש יחליף את הסידור הנוכחי לשבוע הנבחר. ניתן לשכפל שבועות קיימים כגיבוי.
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Per-employee constraints */}
+      <div className="acard">
+        <div className="acard-hdr">👤 אילוצים אישיים לכל יועץ</div>
+        <div className="acard-body" style={{overflowX:'auto'}}>
+          <table className="emp-con-table">
+            <thead>
+              <tr>
+                <th style={{background:'#2a3f9e',minWidth:100}}>עובד</th>
+                {/* Off days */}
+                {DAYS.map((d,di)=>(
+                  <th key={'oh'+di} className="th-off" style={{background:daySectionColors[di]}}>
+                    🚫 {d}
+                  </th>
+                ))}
+                {/* Evening days */}
+                {DAYS.map((d,di)=>(
+                  <th key={'eh'+di} className="th-eve" style={{background:daySectionColors[di]}}>
+                    🌙 {d}
+                  </th>
+                ))}
+                {/* WFH days */}
+                {DAYS.map((d,di)=>(
+                  <th key={'wh'+di} className="th-wfh" style={{background:daySectionColors[di]}}>
+                    🏠 {d}
+                  </th>
+                ))}
+              </tr>
+              <tr>
+                <th style={{background:'#2a3f9e',fontSize:9,color:'rgba(255,255,255,0.7)'}}>סוג אילוץ</th>
+                {DAYS.map((_,di)=><th key={'os'+di} style={{background:'rgba(192,57,43,0.15)',fontSize:9,color:'#800000'}}>לא זמין</th>)}
+                {DAYS.map((_,di)=><th key={'es'+di} style={{background:'rgba(90,58,184,0.1)',fontSize:9,color:'#5a3ab8'}}>ערב מועדף</th>)}
+                {DAYS.map((_,di)=><th key={'ws'+di} style={{background:'rgba(26,106,184,0.1)',fontSize:9,color:'#1a6ab8'}}>WFH מועדף</th>)}
+              </tr>
+            </thead>
+            <tbody>
+              {advs.map(emp=>{
+                const ecp=ec[emp.id]||{};
+                return(
+                  <tr key={emp.id}>
+                    <td style={{fontWeight:700}}>{emp.name}</td>
+                    {DAYS.map((_,di)=>(
+                      <td key={'o'+di} style={{background:di%2===0?'#fff8f8':'#fff5f5'}}>
+                        <input type="checkbox" className="day-cb"
+                          style={{accentColor:'#c0392b'}}
+                          checked={(ecp.daysOff||[]).includes(di)}
+                          onChange={()=>toggle(emp.id,'daysOff',di)}/>
+                      </td>
+                    ))}
+                    {DAYS.map((_,di)=>(
+                      <td key={'e'+di} style={{background:di%2===0?'#f8f5ff':'#f5f0ff'}}>
+                        <input type="checkbox" className="day-cb"
+                          style={{accentColor:'#5a3ab8'}}
+                          checked={(ecp.mustEvening||[]).includes(di)}
+                          onChange={()=>toggle(emp.id,'mustEvening',di)}/>
+                      </td>
+                    ))}
+                    {DAYS.map((_,di)=>(
+                      <td key={'w'+di} style={{background:di%2===0?'#f5faff':'#f0f7ff'}}>
+                        <input type="checkbox" className="day-cb"
+                          style={{accentColor:'#1a6ab8'}}
+                          checked={(ecp.mustWFH||[]).includes(di)}
+                          onChange={()=>toggle(emp.id,'mustWFH',di)}/>
+                      </td>
+                    ))}
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/* ─── ADMIN TAB (with Quick Add/Remove) ─── */
+function AdminTab({employees,setEmployees,onEditDefaults}){
+  const[auth,setAuth]=useState(false);
+  if(!auth) return(
+    <div className="wrap" style={{display:'flex',justifyContent:'center',paddingTop:40}}>
+      <div style={{background:'#fff',border:'1.5px solid var(--border2)',borderRadius:14,padding:28,
+        minWidth:300,textAlign:'center',boxShadow:'var(--shadow-md)'}}>
+        <div style={{fontSize:36,marginBottom:10}}>⚙️</div>
+        <div style={{fontSize:15,fontWeight:800,marginBottom:8}}>פאנל ניהול</div>
+        <div style={{fontSize:12,color:'var(--text2)',marginBottom:16}}>הזן קוד כדי לנהל עובדים</div>
+        <input type="password" className="fc" placeholder="קוד גישה"
+          onKeyDown={e=>{if(e.key==='Enter'){if(e.target.value==='749')setAuth(true);else alert('קוד שגוי');}}}
+          style={{textAlign:'center',letterSpacing:4,fontSize:18}}/>
+        <button className="btn btn-primary" style={{width:'100%',justifyContent:'center',marginTop:10}}
+          onClick={e=>{const inp=e.target.previousSibling;if(inp.value==='749')setAuth(true);else alert('קוד שגוי');}}>
+          כניסה
+        </button>
+      </div>
+    </div>
+  );
+  const[edit,setEdit]=useState(null);
+  const[showAdd,setShowAdd]=useState(false);
+  const[newE,setNewE]=useState({name:'',ext:'',role:'adv',backup:''});
+  const[quickName,setQuickName]=useState('');
+  const[quickExt,setQuickExt]=useState('');
+
+  const saveEdit=()=>{setEmployees(p=>p.map(e=>e.id===edit.id?edit:e));setEdit(null);};
+  const del=id=>{if(window.confirm('למחוק עובד זה?'))setEmployees(p=>p.filter(e=>e.id!==id));};
+  const addEmp=()=>{
+    if(!newE.name)return;
+    const id=Math.max(...employees.map(e=>e.id),0)+1;
+    setEmployees(p=>[...p,{...newE,id,sched:{}}]);
+    setNewE({name:'',ext:'',role:'adv',backup:''});setShowAdd(false);
+  };
+  const quickAdd=()=>{
+    if(!quickName.trim())return;
+    const id=Math.max(...employees.map(e=>e.id),0)+1;
+    setEmployees(p=>[...p,{id,name:quickName.trim(),ext:quickExt.trim()||'—',role:'adv',backup:'',sched:{}}]);
+    setQuickName('');setQuickExt('');
+  };
+  const move=(id,dir)=>{
+    setEmployees(p=>{
+      const a=[...p];const i=a.findIndex(e=>e.id===id);const j=i+dir;
+      if(j<0||j>=a.length)return a;[a[i],a[j]]=[a[j],a[i]];return a;
+    });
+  };
+
+  return(
+    <div>
+      {/* Quick Add Bar */}
+      <div className="quick-emp-bar">
+        <span style={{fontWeight:700,fontSize:13,color:'var(--accent)'}}>➕ הוספה מהירה:</span>
+        <input value={quickName} onChange={e=>setQuickName(e.target.value)}
+          placeholder="שם עובד" onKeyDown={e=>e.key==='Enter'&&quickAdd()}/>
+        <input value={quickExt} onChange={e=>setQuickExt(e.target.value)}
+          placeholder="שלוחה" style={{width:80}} onKeyDown={e=>e.key==='Enter'&&quickAdd()}/>
+        <button className="btn btn-success btn-sm" onClick={quickAdd} disabled={!quickName.trim()}>הוסף</button>
+        <span style={{fontSize:11,color:'var(--text3)'}}>| לחץ Enter לאחר השם להוספה מהירה</span>
+      </div>
+
+      <div className="wrap">
+        <div className="acard">
+          <div className="acard-hdr">
+            👥 כל העובדים ({employees.length})
+            <div style={{display:'flex',gap:6}}>
+            <button className="btn btn-ghost btn-sm" onClick={onEditDefaults}>🔧 ערוך ברירת מחדל</button>
+            <button className="btn btn-primary btn-sm" onClick={()=>setShowAdd(true)}>+ הוסף מפורט</button>
+          </div>
+          </div>
+          <div className="acard-body" style={{maxHeight:500,overflowY:'auto'}}>
+            {employees.map(emp=>{
+              const bu=employees.find(e=>e.name===emp.backup);
+              return(
+                <div key={emp.id} className="eli">
+                  <div>
+                    <span style={{fontWeight:800}}>{emp.name}</span>
+                    <span style={{fontSize:10,color:'var(--text3)',marginRight:8}}>📞 {emp.ext}</span>
+                    <span className={`emp-role-badge ${ROLE_CSS[emp.role]}`}>{ROLE_LABELS[emp.role]}</span>
+                    {bu&&<span style={{fontSize:10,color:'var(--accent)',marginRight:8}}>📌 {bu.name}</span>}
+                  </div>
+                  <div style={{display:'flex',gap:4}}>
+                    <button className="btn btn-ghost btn-sm" onClick={()=>move(emp.id,-1)} title="הזז למעלה">↑</button>
+                    <button className="btn btn-ghost btn-sm" onClick={()=>move(emp.id,1)} title="הזז למטה">↓</button>
+                    <button className="btn btn-ghost btn-sm" onClick={()=>setEdit({...emp})}>✏️</button>
+                    <button className="btn btn-danger btn-sm" onClick={()=>del(emp.id)}>🗑</button>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      </div>
+
+      {edit&&(
+        <div className="modal-overlay">
+          <div className="modal">
+            <h3>✏️ עריכת {edit.name}</h3>
+            <div className="fg"><label>שם</label><input className="fc" value={edit.name} onChange={e=>setEdit({...edit,name:e.target.value})}/></div>
+            <div className="fg"><label>שלוחה</label><input className="fc" value={edit.ext} onChange={e=>setEdit({...edit,ext:e.target.value})}/></div>
+            <div className="fg"><label>תפקיד</label>
+              <select className="fc" value={edit.role} onChange={e=>setEdit({...edit,role:e.target.value})}>
+                <option value="mgr">מנהל</option><option value="adv">יועץ</option><option value="int">מתמחה</option>
+              </select>
+            </div>
+            <div className="fg"><label>מגבה</label>
+              <select className="fc" value={edit.backup||''} onChange={e=>setEdit({...edit,backup:e.target.value})}>
+                <option value="">ללא</option>
+                {employees.filter(e=>e.id!==edit.id).map(e=><option key={e.id} value={e.name}>{e.name}</option>)}
+              </select>
+            </div>
+            <div className="modal-actions">
+              <button className="btn btn-ghost" onClick={()=>setEdit(null)}>ביטול</button>
+              <button className="btn btn-primary" onClick={saveEdit}>שמור</button>
+            </div>
+          </div>
+        </div>
+      )}
+      {showAdd&&(
+        <div className="modal-overlay">
+          <div className="modal">
+            <h3>➕ עובד חדש</h3>
+            <div className="fg"><label>שם</label><input className="fc" value={newE.name} onChange={e=>setNewE({...newE,name:e.target.value})} placeholder="שם מלא"/></div>
+            <div className="fg"><label>שלוחה</label><input className="fc" value={newE.ext} onChange={e=>setNewE({...newE,ext:e.target.value})}/></div>
+            <div className="fg"><label>תפקיד</label>
+              <select className="fc" value={newE.role} onChange={e=>setNewE({...newE,role:e.target.value})}>
+                <option value="mgr">מנהל</option><option value="adv">יועץ</option><option value="int">מתמחה</option>
+              </select>
+            </div>
+            <div className="fg"><label>מגבה</label>
+              <select className="fc" value={newE.backup||''} onChange={e=>setNewE({...newE,backup:e.target.value})}>
+                <option value="">ללא</option>
+                {employees.map(e=><option key={e.id} value={e.name}>{e.name}</option>)}
+              </select>
+            </div>
+            <div className="modal-actions">
+              <button className="btn btn-ghost" onClick={()=>setShowAdd(false)}>ביטול</button>
+              <button className="btn btn-primary" disabled={!newE.name} onClick={addEmp}>הוסף</button>
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
+
+
+/* ─── HOLIDAY MODAL ─── */
+function HolidayModal({type,weekKey,employees,setSchedule,onClose}){
+  const[date,setDate]=useState('');
+  const[dayIdx,setDayIdx]=useState(-1);
+
+  // When user picks a date, compute which day of the week it falls on (0=Sun..5=Fri)
+  const handleDate=(v)=>{
+    setDate(v);
+    if(!v){setDayIdx(-1);return;}
+    const[y,m,d]=v.split('-').map(Number);
+    const dow=new Date(y,m-1,d).getDay(); // 0=Sun
+    setDayIdx(dow<=5?dow:-1);
+  };
+
+  const apply=()=>{
+    if(dayIdx<0){alert('תאריך לא תקין או שאינו בשבוע זה');return;}
+    const shiftVal=type==='holiday'?'holiday':'half';
+    setSchedule(prev=>{
+      const next=JSON.parse(JSON.stringify(prev));
+      employees.forEach(emp=>{
+        if(!next[emp.id])next[emp.id]={};
+        if(!next[emp.id][dayIdx])next[emp.id][dayIdx]={morning:'off',evening:'off'};
+        if(type==='holiday'){
+          next[emp.id][dayIdx]={morning:'holiday',evening:'off'};
+        } else {
+          // ערב חג: בוקר רגיל, ערב = half (חצי יום)
+          next[emp.id][dayIdx]={morning:next[emp.id][dayIdx].morning==='off'?'morning':next[emp.id][dayIdx].morning, evening:'half'};
+        }
+      });
+      return next;
+    });
+    onClose();
+  };
+
+  const typeLabel=type==='holiday'?'יום חג':'ערב חג';
+  const typeDesc=type==='holiday'
+    ?'כל העובדים יסומנו כחג באותו יום (המרכז סגור).'
+    :'כל העובדים יסומנו ערב חג — בוקר רגיל, ערב = חצי יום.';
+
+  return(
+    <div className="modal-overlay">
+      <div className="modal" style={{minWidth:340}}>
+        <h3>{type==='holiday'?'🎉':'🌅'} הגדרת {typeLabel}</h3>
+        <p style={{fontSize:12,color:'var(--text2)',marginBottom:14,lineHeight:1.7}}>{typeDesc}</p>
+        <div className="fg">
+          <label>בחר תאריך {typeLabel}</label>
+          <input className="fc" type="date" value={date} onChange={e=>handleDate(e.target.value)}/>
+        </div>
+        {dayIdx>=0&&<div style={{padding:'8px 12px',background:'#eef4ff',border:'1.5px solid #b0c8f0',
+          borderRadius:8,fontSize:12,color:'#1a3a90',marginBottom:10,fontWeight:700}}>
+          📅 {DAYS[dayIdx]} — יום {dayIdx+1} בשבוע הנבחר
+        </div>}
+        {date&&dayIdx<0&&<div style={{padding:'8px 12px',background:'#fff0f0',border:'1.5px solid #f0b0b0',
+          borderRadius:8,fontSize:12,color:'#800000',marginBottom:10}}>
+          ⚠️ תאריך זה לא נמצא בשבוע הנוכחי (ראשון–שישי)
+        </div>}
+        <div className="modal-actions">
+          <button className="btn btn-ghost" onClick={onClose}>ביטול</button>
+          <button className="btn btn-primary" disabled={dayIdx<0} onClick={apply}>הפעל {typeLabel}</button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/* ─── DEFAULTS EDITOR ─── */
+function DefaultsEditor({employees,setEmployees,onClose}){
+  const[sel,setSel]=useState(employees[3]?.id||employees[0]?.id);
+  const emp=employees.find(e=>e.id===sel);
+  if(!emp)return null;
+
+  // Single shift value per day: morning/wfh/evening/off/vacation/sick/reserve
+  // Maps to sched[d] = {m: ..., e: ...}
+  const getShift=(d)=>{
+    const s=emp.sched[d]||{m:'off',e:'off'};
+    if(s.m==='morning') return 'morning';
+    if(s.m==='wfh') return 'wfh';
+    if(s.e==='evening') return 'evening';
+    if(s.m==='vacation') return 'vacation';
+    if(s.m==='sick') return 'sick';
+    if(s.m==='reserve') return 'reserve';
+    return 'off';
+  };
+  const setShift=(d,val)=>{
+    let m='off', e='off';
+    if(val==='morning'){m='morning';}
+    else if(val==='wfh'){m='wfh';}
+    else if(val==='evening'){e='evening';}
+    else if(val==='vacation'){m='vacation';}
+    else if(val==='sick'){m='sick';}
+    else if(val==='reserve'){m='reserve';}
+    setEmployees(prev=>prev.map(emp2=>{
+      if(emp2.id!==sel)return emp2;
+      return{...emp2,sched:{...emp2.sched,[d]:{m,e}}};
+    }));
+  };
+
+  const shiftOpts=[
+    {v:'morning',l:'☀️ בוקר',bg:'#eef2ff',c:'#1a3a90'},
+    {v:'wfh',l:'🏠 WFH',bg:'#dff0ff',c:'#1a6ab8'},
+    {v:'evening',l:'🌙 ערב',bg:'#f0eeff',c:'#5a3ab8'},
+    {v:'off',l:'➖ חופשי',bg:'#f5f6fa',c:'#8a93c0'},
+    {v:'vacation',l:'🌴 חופש',bg:'#fffbe8',c:'#8a6000'},
+    {v:'sick',l:'🤒 מחלה',bg:'#ffeeee',c:'#b02020'},
+    {v:'reserve',l:'🪖 מילואים',bg:'#fff8e8',c:'#805000'},
+  ];
+
+  const dayColors=['#1e3a6e','#1e4a6e','#1a3d5e','#1a3060','#1e2d6e','#2d1e6e'];
+
+  return(
+    <div>
+      <div className="fg">
+        <label>בחר עובד לעריכת ברירת מחדל שלו</label>
+        <select className="fc" value={sel} onChange={e=>setSel(Number(e.target.value))}>
+          {employees.filter(e=>e.role!=='mgr').map(e=><option key={e.id} value={e.id}>{e.name} ({ROLE_LABELS[e.role]})</option>)}
+        </select>
+      </div>
+      <div style={{display:'grid',gridTemplateColumns:'repeat(6,1fr)',gap:8,marginTop:10}}>
+        {DAYS.map((day,di)=>{
+          const cur=getShift(di);
+          const opt=shiftOpts.find(o=>o.v===cur)||shiftOpts[3];
+          return(
+            <div key={di} style={{borderRadius:9,overflow:'hidden',border:'1.5px solid #c8cce8'}}>
+              <div style={{background:dayColors[di],color:'#fff',padding:'6px 8px',fontSize:11,fontWeight:800,textAlign:'center'}}>
+                {DAY_EMOJIS[di]} {day}
+              </div>
+              <div style={{padding:'8px 6px',background:'#fff'}}>
+                <select
+                  style={{width:'100%',background:opt.bg,color:opt.c,border:'1.5px solid #c8cce8',
+                    borderRadius:6,padding:'6px 4px',fontSize:12,fontFamily:'Heebo',fontWeight:700,cursor:'pointer'}}
+                  value={cur}
+                  onChange={e=>setShift(di,e.target.value)}>
+                  {shiftOpts.map(o=><option key={o.v} value={o.v}>{o.l}</option>)}
+                </select>
+              </div>
+            </div>
+          );
+        })}
+      </div>
+      <div style={{marginTop:12,padding:'8px 12px',background:'#eef4ff',border:'1px solid #b0c8f0',borderRadius:7,fontSize:11,color:'#1a3a90'}}>
+        💡 בחר משמרת אחת לכל יום. ברירת מחדל זו תשמש בעת יצירת שבוע חדש.
+      </div>
+      <div className="modal-actions" style={{marginTop:12}}>
+        <button className="btn btn-ghost" onClick={onClose}>סגור ✓</button>
+      </div>
+    </div>
+  );
+}
+
+/* ═══════════════════════════════════════
+   APP ROOT
+═══════════════════════════════════════ */
+function App(){
+  const[employees,setEmployees]=useState(()=>LS.get('emp_v5',RAW_EMPLOYEES));
+  const[weeks,setWeeks]=useState(()=>LS.get('weeks_v5',{}));
+  const[duties,setDuties]=useState(()=>LS.get('duties_v5',{}));
+  const[curWeek,setCurWeek]=useState(()=>thisWeekSunday());
+  const[tab,setTab]=useState('schedule');
+  const[isAdmin,setIsAdmin]=useState(true);
+  const[weekModal,setWeekModal]=useState(false);
+  const[newWKey,setNewWKey]=useState('');
+  const[warMode,setWarMode]=useState(false);
+  const[showDefaultsModal,setShowDefaultsModal]=useState(false);
+  const[editingDefaults,setEditingDefaults]=useState(null);
+  const[holidayModal,setHolidayModal]=useState(false); // {type:'holiday'|'half'}
+
+  useEffect(()=>LS.set('emp_v5',employees),[employees]);
+
+  const schedule=weeks[curWeek]||{};
+  const today=thisWeekSunday();
+  const weekDuties=duties[curWeek]||(() => {
+    const d={};
+    DAYS.forEach((_,di)=>{d[di]={};DUTY_TYPES.forEach((_,dti)=>{d[di][dti]=DEFAULT_DUTIES[di]?.[dti]||'';});});
+    return d;
+  })();
+
+  const setSchedule=upd=>setWeeks(prev=>{
+    const next={...prev,[curWeek]:typeof upd==='function'?upd(prev[curWeek]||{}):upd};
+    LS.set('weeks_v5',next);return next;
+  });
+  const setWeekDuties=upd=>setDuties(prev=>{
+    const next={...prev,[curWeek]:typeof upd==='function'?upd(prev[curWeek]||{}):upd};
+    LS.set('duties_v5',next);return next;
+  });
+  const initWeek=(key,fromKey)=>{
+    setWeeks(prev=>{
+      const base=fromKey&&prev[fromKey]?JSON.parse(JSON.stringify(prev[fromKey])):buildDefault(employees,key);
+      const next={...prev,[key]:base};LS.set('weeks_v5',next);return next;
+    });
+    setCurWeek(key);
+  };
+  const autoGen=()=>{
+    if(!window.confirm('לאפס לסידור ברירת מחדל?'))return;
+    setSchedule(buildDefault(employees,curWeek));
+  };
+
+  // WAR MODE: convert all morning → wfh
+  const activateWarMode=()=>{
+    if(!window.confirm('מצב מלחמה: כל משמרות הבוקר יהפכו ל"בוקר מהבית". להמשיך?'))return;
+    setSchedule(prev=>{
+      const next=JSON.parse(JSON.stringify(prev));
+      employees.forEach(emp=>{
+        for(let d=0;d<6;d++){
+          if(next[emp.id]?.[d]?.morning==='morning')next[emp.id][d].morning='wfh';
+        }
+      });
+      return next;
+    });
+    setWarMode(true);
+  };
+  const deactivateWarMode=()=>{
+    if(!window.confirm('לבטל מצב מלחמה ולהחזיר משמרות בוקר רגילות?'))return;
+    setSchedule(prev=>{
+      const next=JSON.parse(JSON.stringify(prev));
+      employees.forEach(emp=>{
+        for(let d=0;d<6;d++){
+          if(next[emp.id]?.[d]?.morning==='wfh')next[emp.id][d].morning='morning';
+        }
+      });
+      return next;
+    });
+    setWarMode(false);
+  };
+
+  // Auto-generate duties
+  const handleAutoGenDuties=()=>{
+    if(!window.confirm('לייצר תורנויות אוטומטיות? זה ידרוס את הבחירות הנוכחיות.'))return;
+    setWeekDuties(autoGenerateDuties(employees,schedule));
+  };
+
+  const weekList=[...new Set([curWeek,...Object.keys(weeks)])].sort().reverse();
+
+  const TABS=[
+    ['schedule','📅 סידור שבועי'],
+    ['constraints','🤖 אילוצים'],
+    ['manager','📊 דוח מנהל'],
+    ...(isAdmin?[['admin','⚙️ ניהול']]:[])
+  ];
+
+  return(
+    <div>
+      {/* HEADER */}
+      <div className="header">
+        <div className="header-left">
+          <div className="logo-icon">📊</div>
+          <div className="logo-text"><h1>מרכז יועצי השקעות</h1><span>מערכת סידור עבודה שבועי</span></div>
+        </div>
+        <div className="header-right">
+          <span style={{fontSize:11,padding:'3px 8px',borderRadius:4,fontWeight:700,
+            background:'rgba(255,255,255,0.15)',color:'#fff',border:'1px solid rgba(255,255,255,0.3)'}}>
+            {isAdmin?'🔐 מנהל':'👤 משתמש'}
+          </span>
+          <button className="btn btn-white btn-sm" onClick={()=>{
+            if(isAdmin){setIsAdmin(false);}
+            else{const pw=window.prompt('סיסמת מנהל:');if(pw==='749')setIsAdmin(true);else if(pw!==null)alert('סיסמה שגויה');}
+          }}>{isAdmin?'מצב משתמש':'מצב מנהל 🔑'}</button>
+          {warMode
+            ?<button className="btn btn-sm" style={{background:'#c0392b',color:'#fff',border:'1px solid #e74c3c'}} onClick={deactivateWarMode}>🕊️ בטל מצב מלחמה</button>
+            :<button className="btn btn-sm" style={{background:'rgba(192,57,43,0.3)',color:'#ffb0b0',border:'1px solid rgba(192,57,43,0.5)'}} onClick={activateWarMode}>🪖 מצב מלחמה</button>
+          }
+          <button className="btn btn-white btn-sm" onClick={()=>window.print()}>🖨️</button>
+          <button className="btn btn-sm" style={{background:'#8B0000',color:'#fff'}} onClick={()=>exportToPDF(employees,schedule,weekDuties,curWeek)}>📄 PDF</button>
+          <button className="btn btn-sm" style={{background:'#1a8a4a',color:'#fff'}} onClick={()=>exportToExcel(employees,schedule,curWeek)}>📥 Excel</button>
+        </div>
+      </div>
+
+      {/* WEEK BAR */}
+      <div className="week-bar">
+        <select className="week-select" value={curWeek} onChange={e=>setCurWeek(e.target.value)}>
+          {weekList.map(wk=><option key={wk} value={wk}>{weekLabel(wk)}{wk===today?' (השבוע)':''}</option>)}
+        </select>
+        {warMode?<span className="war-badge">🪖 מצב מלחמה</span>:<span className="week-badge">{weekLabel(curWeek)}</span>}
+        <button className="btn btn-primary btn-sm" onClick={()=>setWeekModal(true)}>+ שבוע חדש</button>
+        {weeks[curWeek]&&<button className="btn btn-ghost btn-sm" onClick={()=>initWeek(curWeek,curWeek)}>🔁 שכפל</button>}
+        <button className="btn btn-ghost btn-sm" onClick={autoGen}>⚡ ברירת מחדל</button>
+        <button className="btn btn-ghost btn-sm" style={{color:'#800050',borderColor:'#d890b8'}}
+          onClick={()=>setHolidayModal({type:'holiday'})}>🎉 יום חג</button>
+        <button className="btn btn-ghost btn-sm" style={{color:'#804000',borderColor:'#e8a040'}}
+          onClick={()=>setHolidayModal({type:'half'})}>🌅 ערב חג</button>
+      </div>
+
+      {/* LEGEND */}
+      <div className="legend">
+        {[
+          ['#b0bcf0','☀️ בוקר'],['#80c0f0','🏠 WFH'],['#b8a8f0','🌙 ערב'],
+          ['#e8c840','🌴 חופש'],['#f0a0a0','🤒 מחלה'],['#e8c080','🪖 מילואים'],['#d8daea','➖ חופשי'],['#f0c0e0','🎉 חג'],['#f8d8b0','🌅 ערב חג']
+        ].map(([bg,lbl])=>(
+          <div key={lbl} className="legend-item">
+            <span className="ldot" style={{background:bg}}></span>{lbl}
+          </div>
+        ))}
+      </div>
+
+      {/* TABS */}
+      <div className="tabs">
+        {TABS.map(([k,l])=>(
+          <div key={k} className={`tab ${tab===k?'tab-on':'tab-off'}`} onClick={()=>setTab(k)}>{l}</div>
+        ))}
+      </div>
+
+      {/* CONTENT */}
+      {!weeks[curWeek]&&tab==='schedule'?(
+        <div style={{padding:'20px'}}>
+          <div className="empty">
+            <div className="eicon">📅</div>
+            <div style={{marginBottom:16,fontSize:14}}>אין סידור לשבוע זה</div>
+            <div style={{display:'flex',gap:10,justifyContent:'center',flexWrap:'wrap'}}>
+              <button className="btn btn-primary" onClick={()=>initWeek(curWeek,null)}>⚡ ברירת מחדל</button>
+              {weekList.length>1&&<button className="btn btn-ghost" onClick={()=>initWeek(curWeek,weekList.find(w=>w!==curWeek))}>🔁 שכפל שבוע קודם</button>}
+              <button className="btn btn-teal" onClick={()=>setTab('constraints')}>🤖 ייצר לפי אילוצים</button>
+            </div>
+          </div>
+        </div>
+      ):(
+        <>
+          {tab==='schedule'&&<ScheduleTab employees={employees} schedule={schedule} setSchedule={setSchedule}
+            duties={weekDuties} setDuties={setWeekDuties} warMode={warMode} onAutoGenDuties={handleAutoGenDuties} weekKey={curWeek}/>}
+          {tab==='constraints'&&<ConstraintsTab employees={employees} onGenerate={sched=>{setSchedule(sched);setTab('schedule');}}/>}
+          {tab==='manager'&&<ManagerTab employees={employees} schedule={schedule}/>}
+          {tab==='admin'&&isAdmin&&<AdminTab employees={employees} setEmployees={setEmployees} onEditDefaults={()=>setShowDefaultsModal(true)}/>}
+        </>
+      )}
+
+      {/* WEEK MODAL */}
+      {weekModal&&(
+        <div className="modal-overlay">
+          <div className="modal">
+            <h3>📅 שבוע חדש</h3>
+            <div className="fg"><label>תאריך ראשון בשבוע (ראשון)</label>
+              <input className="fc" type="date" value={newWKey} onChange={e=>setNewWKey(e.target.value)}/>
+            </div>
+            <div className="modal-actions">
+              <button className="btn btn-ghost" onClick={()=>setWeekModal(false)}>ביטול</button>
+              <button className="btn btn-primary" disabled={!newWKey}
+                onClick={()=>{initWeek(newWKey,curWeek);setWeekModal(false);}}>צור שבוע</button>
+            </div>
+          </div>
+        </div>
+      )}
+
+
+      {/* HOLIDAY MODAL */}
+      {holidayModal&&<HolidayModal type={holidayModal.type} weekKey={curWeek}
+        employees={employees} setSchedule={setSchedule} onClose={()=>setHolidayModal(false)}/>}
+
+      {/* DEFAULTS EDITOR MODAL */}
+      {showDefaultsModal&&(
+        <div className="modal-overlay">
+          <div className="modal" style={{minWidth:520,maxWidth:'96vw'}}>
+            <h3>🔧 עריכת ברירת מחדל לסידור</h3>
+            <p style={{fontSize:12,color:'var(--text2)',marginBottom:14,lineHeight:1.7}}>
+              כאן תוכל לערוך את הסידור שנטען כברירת מחדל לכל עובד.<br/>
+              שינויים אלו ישמרו וישפיעו על כפתור "ברירת מחדל" בשבועות חדשים.
+            </p>
+            <DefaultsEditor employees={employees} setEmployees={setEmployees} onClose={()=>setShowDefaultsModal(false)}/>
+          </div>
+        </div>
+      )}
+      {/* FOOTER */}
+      <div className="footer">
+        © כל הזכויות שמורות לאלעד | מרכז יועצי השקעות — מערכת סידור עבודה שבועי
+      </div>
+    </div>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById('root')).render(<App/>);
+</script>
+</body>
+</html>
